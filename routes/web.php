@@ -248,6 +248,16 @@ Route::get('/download-snapshot-file/{id}/{center}', 'LedgerSnapShotController@do
 
 Route::get('/test', function () {
 
+	$accounts = Ledger_Internal::all();
+	foreach ($accounts as $account) {
+		$children = Ledger_Internal::where('parent_id', $account->id)->get();
+		while ($children) {
+			$children = Ledger_Internal::where('parent_id', $account->id)->get();
+		}
+
+	}
+	dd($children);
+
     $ledger = new App\Ledger;
     $member = App\Member::where('ippis', 355925)->first();
     $expected = $ledger->getMemberExpectedMonthlyDeduction($member->ippis, '2020-08-30', 17679);

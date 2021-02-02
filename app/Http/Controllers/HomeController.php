@@ -16,11 +16,11 @@ use App\Member;
 use App\Share;
 
 use Illuminate\Http\Request;
-// use App\Charts\SavingsByCenter;
-// use App\Charts\LongTermLoansByCenter;
-// use App\Charts\ShortTermLoansByCenter;
-// use App\Charts\CommodityLoansByCenter;
-// use App\Charts\NumberOfMembersByCenter;
+use App\Charts\SavingsByCenter;
+use App\Charts\LongTermLoansByCenter;
+use App\Charts\ShortTermLoansByCenter;
+use App\Charts\CommodityLoansByCenter;
+use App\Charts\NumberOfMembersByCenter;
 
 use App\Ledger_Internal;
 use App\LedgerInternalTransaction;
@@ -68,24 +68,24 @@ class HomeController extends Controller
         $centers = Center::pluck('name', 'id');
         
         // monthly savings
-        // $monthlySavings = new SavingsByCenter;
-        // $data['monthlySavings'] = $monthlySavings;        
-        $data['monthlySavings'] = [];
+        $monthlySavings = new SavingsByCenter;
+        $data['monthlySavings'] = $monthlySavings;        
+        // $data['monthlySavings'] = [];
         
         // long term loans chart
-        // $longTermChart = new LongTermLoansByCenter;
-        // $data['longTermChart'] = $longTermChart;        
-        $data['longTermChart'] = [];
+        $longTermChart = new LongTermLoansByCenter;
+        $data['longTermChart'] = $longTermChart;        
+        // $data['longTermChart'] = [];
         
         // short term loans chart
-        // $shortTermChart = new ShortTermLoansByCenter;
-        // $data['shortTermChart'] = $shortTermChart;        
-        $data['shortTermChart'] = [];
+        $shortTermChart = new ShortTermLoansByCenter;
+        $data['shortTermChart'] = $shortTermChart;        
+        // $data['shortTermChart'] = [];
         
         // commodity loans chart
-        // $commodityChart = new CommodityLoansByCenter;
-        // $data['commodityChart'] = $commodityChart;        
-        $data['commodityChart'] = [];
+        $commodityChart = new CommodityLoansByCenter;
+        $data['commodityChart'] = $commodityChart;        
+        // $data['commodityChart'] = [];
         
 
 
