@@ -23,7 +23,7 @@ class TransactionTypeExtTableSeeder extends Seeder
         TransactionType_Ext::insert([
             'xact_type_code_ext' => 'wd_S',
             'description' => 'Withdrawal from savings',
-            'associated_trxns' => json_encode (json_decode ('{"cr": "121000", "dr": "21000"}')),
+            'associated_trxns' => json_encode (json_decode ('{"cr": "121000", "dr": "210000"}')),
         ]);
 
         TransactionType_Ext::insert([
@@ -65,7 +65,7 @@ class TransactionTypeExtTableSeeder extends Seeder
         TransactionType_Ext::insert([
             'xact_type_code_ext' => 'stl_Rp_Savings',
             'description' => 'Short Term Loan Repayment from Savings',
-            'associated_trxns' => json_encode (json_decode ('{"cr": "124000", "dr": "21000"}')),
+            'associated_trxns' => json_encode (json_decode ('{"cr": "124000", "dr": "210000"}')),
         ]);
 
         TransactionType_Ext::insert([

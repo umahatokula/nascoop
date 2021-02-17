@@ -73,7 +73,14 @@ class ShortTermController extends Controller
      * Short term loans
      */
     function newShortLoan($ippis) {
+
         $member = Member::where('ippis', $ippis)->first();
+
+        if ($member->is_active == 0) {
+            Toastr::error('This member has been deactivated', 'Error', ["positionClass" => "toast-bottom-right"]);
+            return redirect()->route('members.dashboard', $member->ippis);
+        }
+
         $data['member'] = $member;
 
         // ensure certain bio details are entered
@@ -314,7 +321,13 @@ class ShortTermController extends Controller
      * Show reayment form
      */
     function shortLoanRepayment($ippis) {
-        $member = Member::where('ippis', $ippis)->first(); 
+        
+        $member = Member::where('ippis', $ippis)->first();
+        
+        if ($member->is_active == 0) {
+            Toastr::error('This member has been deactivated', 'Error', ["positionClass" => "toast-bottom-right"]);
+            return redirect()->route('members.dashboard', $member->ippis);
+        }
 
         // ensure certain bio details are entered
         $ensureMemberDetails = $member->ensureMemberDetails();

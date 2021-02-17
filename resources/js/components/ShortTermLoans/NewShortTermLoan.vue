@@ -191,6 +191,11 @@ export default {
         alert('Loan amount is more than Maximum Allowed')
         return;
       }
+
+      if ((this.loan.total_amount - (this.loan.adjustment + this.loan.processing_fee + this.loan.bank_charges + this.loan.interest)) <= 0) {
+          alert('Loan amount must be greater than zero.')
+          return;
+      }
       
       const confirmation = confirm("Are you sure?");
 

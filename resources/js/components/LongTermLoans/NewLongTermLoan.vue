@@ -165,7 +165,7 @@ export default {
         guarantor_1        : null,
         guarantor_2        : null
       },
-      member            : null,
+    //   member            : null,
       banks             : [],
       errors            : [],
       members           : [],
@@ -251,8 +251,13 @@ export default {
 
       // Check if member has ever taken housing loan
       if((this.taken_housing_loan && this.loan.no_of_months == 72) || (this.taken_housing_loan && this.loan.no_of_months == 36)) {
-        alert('This member has already taken a Housing Loan,')
+        alert('This member has already taken a Housing Loan.')
         return;
+      }
+
+      if ((this.loan.total_amount - (this.loan.adjustment + this.loan.processing_fee + this.loan.bank_charges + this.loan.interest)) <= 0) {
+          alert('Loan amount must be greater than zero.')
+          return;
       }
 
       const confirmation = confirm("Are you sure?");
@@ -296,7 +301,7 @@ export default {
         .get(`members/${this.member.ippis}/new-long-loan`, this.loan)
         .then(res => {
           // console.log(res.data);  
-          this.member              = res.data.member
+        //   this.member              = res.data.member
           this.members             = JSON.parse(res.data.members)
           this.savings             = res.data.savings
           this.periods             = res.data.periods

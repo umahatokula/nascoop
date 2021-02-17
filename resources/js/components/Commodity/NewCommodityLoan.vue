@@ -141,6 +141,12 @@ export default {
       //   alert('Loan amount is more than Maximum Allowed')
       //   return;
       // }
+
+      if (this.loan.total_amount <= 0) {
+          alert('Loan amount must be greater than zero.')
+          return;
+      }
+
       const confirmation = confirm("Are you sure?");
 
       if (!confirmation) {

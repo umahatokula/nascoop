@@ -25,13 +25,10 @@ class MonthlySaving extends Model
         } else {
             $members = Member::with('ledgers')->get();
         }
-        // $members = Member::with('ledgers')->get();
         
-        $total = $members->reduce(function ($carry, $member) {
-            $bal = $member->ledgers->where('is_authorized', 1)->last() ? $member->ledgers->where('is_authorized', 1)->last()->savings_bal : 0;
+        return $members->reduce(function ($carry, $member) {
+            $bal = $member->monthly_savings_payments->where('is_authorized', 1)->last() ? $member->monthly_savings_payments->where('is_authorized', 1)->last()->bal : 0;
             return $carry + $bal;
         });
-
-        return $total;
     }
 }

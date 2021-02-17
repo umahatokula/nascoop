@@ -220,6 +220,7 @@ class LedgerController extends Controller
 
                 if ($mp) {
                     if($mp->is_authorized == 0) {
+                    // if($mp->is_authorized == 1) {
                         $mp->is_authorized = 1;
 
                         if ($mp->cr != 0) { // Authorize credit

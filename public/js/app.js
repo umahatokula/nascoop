@@ -4295,6 +4295,11 @@ __webpack_require__.r(__webpack_exports__);
       //   alert('Loan amount is more than Maximum Allowed')
       //   return;
       // }
+      if (this.loan.total_amount <= 0) {
+        alert('Loan amount must be greater than zero.');
+        return;
+      }
+
       var confirmation = confirm("Are you sure?");
 
       if (!confirmation) {
@@ -5901,7 +5906,7 @@ __webpack_require__.r(__webpack_exports__);
         guarantor_1: null,
         guarantor_2: null
       },
-      member: null,
+      //   member            : null,
       banks: [],
       errors: [],
       members: [],
@@ -5990,7 +5995,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
       if (this.taken_housing_loan && this.loan.no_of_months == 72 || this.taken_housing_loan && this.loan.no_of_months == 36) {
-        alert('This member has already taken a Housing Loan,');
+        alert('This member has already taken a Housing Loan.');
+        return;
+      }
+
+      if (this.loan.total_amount - (this.loan.adjustment + this.loan.processing_fee + this.loan.bank_charges + this.loan.interest) <= 0) {
+        alert('Loan amount must be greater than zero.');
         return;
       }
 
@@ -6026,7 +6036,7 @@ __webpack_require__.r(__webpack_exports__);
     this.loan.ippis = this.member.ippis;
     axios.get("members/".concat(this.member.ippis, "/new-long-loan"), this.loan).then(function (res) {
       // console.log(res.data);  
-      _this2.member = res.data.member;
+      //   this.member              = res.data.member
       _this2.members = JSON.parse(res.data.members);
       _this2.savings = res.data.savings;
       _this2.periods = res.data.periods;
@@ -7067,6 +7077,11 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.loan.total_amount > this.max_loan_amount) {
         alert('Loan amount is more than Maximum Allowed');
+        return;
+      }
+
+      if (this.loan.total_amount - (this.loan.adjustment + this.loan.processing_fee + this.loan.bank_charges + this.loan.interest) <= 0) {
+        alert('Loan amount must be greater than zero.');
         return;
       }
 
@@ -41487,7 +41502,13 @@ var render = function() {
                         _vm._v(_vm._s(entry.description))
                       ]),
                       _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(entry.ledger_dr.account_name))]),
+                      _c("td", [
+                        _vm._v(
+                          _vm._s(
+                            entry.ledger_dr ? entry.ledger_dr.account_name : ""
+                          )
+                        )
+                      ]),
                       _vm._v(" "),
                       _c("td", { staticClass: "text-right" }, [
                         _vm._v(_vm._s(_vm._f("number_format")(entry.amount)))
@@ -41501,7 +41522,13 @@ var render = function() {
                       _vm._v(" "),
                       _vm._m(2, true),
                       _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(entry.ledger_cr.account_name))]),
+                      _c("td", [
+                        _vm._v(
+                          _vm._s(
+                            entry.ledger_cr ? entry.ledger_cr.account_name : ""
+                          )
+                        )
+                      ]),
                       _vm._v(" "),
                       _c("td", { staticClass: "text-right" }, [_vm._v(" ")]),
                       _vm._v(" "),
@@ -46142,29 +46169,6 @@ var render = function() {
               }
             },
             [
-              _c("div", { staticClass: "row my-2" }, [
-                _c("div", { staticClass: "col-md-6" }, [
-                  _vm._v("Commodity Loans")
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "col-md-6 text-right" }, [
-                  _c(
-                    "a",
-                    {
-                      staticClass: "btn btn-success",
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          return _vm.addCommDuration($event)
-                        }
-                      }
-                    },
-                    [_c("i", { staticClass: "dripicons-plus" }), _vm._v("Add")]
-                  )
-                ])
-              ]),
-              _vm._v(" "),
               _c(
                 "table",
                 {
@@ -46385,29 +46389,6 @@ var render = function() {
               }
             },
             [
-              _c("div", { staticClass: "row my-2" }, [
-                _c("div", { staticClass: "col-md-6" }, [
-                  _vm._v("Long Term Loans")
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "col-md-6 text-right" }, [
-                  _c(
-                    "a",
-                    {
-                      staticClass: "btn btn-success",
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          return _vm.addLtlDuration($event)
-                        }
-                      }
-                    },
-                    [_c("i", { staticClass: "dripicons-plus" }), _vm._v("Add")]
-                  )
-                ])
-              ]),
-              _vm._v(" "),
               _c(
                 "table",
                 {
@@ -46664,29 +46645,6 @@ var render = function() {
               }
             },
             [
-              _c("div", { staticClass: "row my-2" }, [
-                _c("div", { staticClass: "col-md-6" }, [
-                  _vm._v("Short Term Loans")
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "col-md-6 text-right" }, [
-                  _c(
-                    "a",
-                    {
-                      staticClass: "btn btn-success",
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          return _vm.addStlDuration($event)
-                        }
-                      }
-                    },
-                    [_c("i", { staticClass: "dripicons-plus" }), _vm._v("Add")]
-                  )
-                ])
-              ]),
-              _vm._v(" "),
               _c(
                 "table",
                 {

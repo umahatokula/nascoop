@@ -42,9 +42,10 @@ class LongTermController extends Controller
 
         $date_from = Carbon::now()->startOfYear();
         $date_to = Carbon::now()->endOfYear();
-        $data['member'] = Member::where('ippis', $ippis)->first();
+        $member = Member::where('ippis', $ippis)->first();
+        $data['member'] = $member;
 
-        if(!isset($data['member'])) {
+        if(!isset($member)) {
             Toastr::error('This member does not exist', 'Error', ["positionClass" => "toast-bottom-right"]);
             return redirect()->route('members.longTermLoans', $ippis);
         }
@@ -74,6 +75,12 @@ class LongTermController extends Controller
         // dd($ippis);
 
         $member = Member::where('ippis', $ippis)->first();
+        
+        if ($member->is_active == 0) {
+            Toastr::error('This member has been deactivated', 'Error', ["positionClass" => "toast-bottom-right"]);
+            return redirect()->route('members.dashboard', $member->ippis);
+        }
+
         $data['member'] = $member;
 
         // ensure certain bio details are entered
@@ -335,7 +342,13 @@ class LongTermController extends Controller
      * Show repayment form
      */
     function longLoanRepayment($ippis) {
-        $member = Member::where('ippis', $ippis)->first(); 
+
+        $member = Member::where('ippis', $ippis)->first();
+        
+        if ($member->is_active == 0) {
+            Toastr::error('This member has been deactivated', 'Error', ["positionClass" => "toast-bottom-right"]);
+            return redirect()->route('members.dashboard', $member->ippis);
+        }
 
         // ensure certain bio details are entered
         $ensureMemberDetails = $member->ensureMemberDetails();

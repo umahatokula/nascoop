@@ -8,7 +8,7 @@
                 </a>
             </div><!-- End Logo-->
             <div class="menu-extras topbar-custom navbar p-0">
-                <div class="search-wrap" id="search-wrap">
+                <div class="search-wrap open" id="search-wrap">
                     <div class="search-bar">
                         {!! Form::open(['route' => 'members.dashboardSearch', 'method' => 'GET']) !!}
                         <input autofocus class="search-input" name="search" placeholder="Search" id="search">

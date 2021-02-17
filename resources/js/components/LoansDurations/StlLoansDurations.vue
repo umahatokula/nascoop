@@ -10,12 +10,12 @@
 
         <form @submit.prevent="submitForm">
 
-          <div class="row my-2">
+          <!-- <div class="row my-2">
             <div class="col-md-6">Short Term Loans</div>
             <div class="col-md-6 text-right">
               <a class="btn btn-success" @click.prevent="addStlDuration" href="#"><i class="dripicons-plus"></i>Add</a>
             </div>
-          </div>
+          </div> -->
           <table class="table table-bordered table-responsive table-striped">
             <thead>
               <th>Duration</th>

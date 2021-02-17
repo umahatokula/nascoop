@@ -244,7 +244,7 @@ class Member extends Model
      */
     public function member_pay_point()
     {
-        return $this->belongsTo(Center::class, 'pay_point', 'id');
+        return $this->belongsTo(Center::class, 'pay_point', 'id')->orderBy('name');
     }
 
     /**

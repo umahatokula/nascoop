@@ -835,10 +835,10 @@ class Ledger extends Model
     }
 
     public static function areTherePendingTransaction() {
-        $MonthlySavingsPayment = MonthlySavingsPayment::where('start_processing', 1)->where('is_approved', 0)->count();
-        $LongTerm = LongTerm::where('start_processing', 1)->where('is_approved', 0)->count();
-        $ShortTerm = ShortTerm::where('start_processing', 1)->where('is_approved', 0)->count();
-        $Commodity = Commodity::where('start_processing', 1)->where('is_approved', 0)->count();
+        $MonthlySavingsPayment = MonthlySavingsPayment::where('start_processing', 1)->where('is_authorized', 0)->count();
+        $LongTerm = LongTermPayment::where('is_authorized', 0)->count();
+        $ShortTerm = ShortTermPayment::where('is_authorized', 0)->count();
+        $Commodity = CommodityPayment::where('is_authorized', 0)->count();
         
         return ($MonthlySavingsPayment + $LongTerm + $ShortTerm + $Commodity) > 0 ? true : false;
     }

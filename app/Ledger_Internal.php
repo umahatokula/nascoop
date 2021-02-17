@@ -214,7 +214,7 @@ class Ledger_Internal extends Model
         }
 
         $centerName = $member->member_pay_point ? $member->member_pay_point->name : '';
-        $ledger_no = $trxnType->getDetailAccountForThisTransactionType('dr', $centerName) ;
+        $ledger_no = $trxnType->getDetailAccountForThisTransactionType('dr', $centerName);
 
         $parent = $trxnType->associated_trxns['cr'];
         // $ledger_no_dr = $member->member_pay_point ? $member->member_pay_point->transacting_bank_ledger_no : $parent;

@@ -19,4 +19,32 @@ class AccountController extends Controller
         $this->middleware('auth');
     }
 
+    public function listAccounts() {
+
+        $accounts = Ledger_Internal::all();
+
+        dd($this->accountsTree($accounts));
+
+    }
+
+    public function accountsTree($accounts) {
+
+        // $tree = [];
+
+        foreach ($accounts as $account) {
+            $children = $account->getChildren();
+
+            if ($children->count() > 0) {
+                $tree[] = [$account->account_name, $children];
+                $this->accountsTree($children);
+            } else {
+                $parent = $accounts->where('id', $account->parent_id)->first();
+
+                $tree[] = [$parent, $account->account_name];
+            } 
+        }
+
+        return $tree;
+    }
+
 }

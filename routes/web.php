@@ -246,17 +246,31 @@ Route::get('/ledger/snap-shot', 'LedgerSnapShotController@ledgerSnapShot')->name
 Route::get('/download-snapshot-file/{id}/{center}', 'LedgerSnapShotController@downloadSnapshotFile')->name('downloadSnapshotFile');
 
 
+Route::get('tempLogs', 'TempActivityLogController@moveFromTempToActual');
+Route::get('generateIPPIDDeductionFile', 'IppisDeductionsExportController@generateIPPIDDeductionFile');
+Route::get('reconcileIppisImport', 'IppisDeductionsImportController@reconcileIppisImport');
+Route::get('doInitialImport', 'InitialImportController@doInitialImport');
+Route::get('accountstatement', 'AccountStatementController@generateMonthlyStatement');
+
+// Ippis Trxns
+Route::get('ippis/trxns', 'IppisTrxnsController@index')->name('ippis.trxns');
+Route::get('ippis/debit-bank', 'IppisTrxnsController@debitBank')->name('ippis.debitBank');
+Route::get('ippis/debit-bank/data', 'IppisTrxnsController@debitBankData')->name('ippis.debitBankData');
+Route::post('ippis/debit-bank/post', 'IppisTrxnsController@debitBankPost')->name('ippis.debitBankPost');
+Route::get('ippis/trxn/{trxnID}/details', 'IppisTrxnsController@trxnDetails')->name('ippis.trxnDetails');
+
+// Inventory
+Route::get('inventory/items', 'InventoryItemController@index')->name('inventory.index');
+Route::get('inventory/items/create', 'InventoryItemController@create')->name('inventory.create');
+Route::post('inventory/items/store', 'InventoryItemController@store')->name('inventory.store');
+Route::get('inventory/items/{id}/store', 'InventoryItemController@edit')->name('inventory.edit');
+Route::put('inventory/items/{id}/update', 'InventoryItemController@update')->name('inventory.update');
+Route::get('inventory/items/{id}/delete', 'InventoryItemController@delete')->name('inventory.delete');
+
+
+// ================================TEST ROUTES==============================
+Route::get('listAccounts', 'AccountController@listAccounts');
 Route::get('/test', function () {
-
-	$accounts = Ledger_Internal::all();
-	foreach ($accounts as $account) {
-		$children = Ledger_Internal::where('parent_id', $account->id)->get();
-		while ($children) {
-			$children = Ledger_Internal::where('parent_id', $account->id)->get();
-		}
-
-	}
-	dd($children);
 
     $ledger = new App\Ledger;
     $member = App\Member::where('ippis', 355925)->first();
@@ -298,25 +312,3 @@ Route::get('/test', function () {
 
     
 });
-
-Route::get('tempLogs', 'TempActivityLogController@moveFromTempToActual');
-Route::get('generateIPPIDDeductionFile', 'IppisDeductionsExportController@generateIPPIDDeductionFile');
-Route::get('reconcileIppisImport', 'IppisDeductionsImportController@reconcileIppisImport');
-Route::get('doInitialImport', 'InitialImportController@doInitialImport');
-Route::get('accountstatement', 'AccountStatementController@generateMonthlyStatement');
-
-// Ippis Trxns
-Route::get('ippis/trxns', 'IppisTrxnsController@index')->name('ippis.trxns');
-Route::get('ippis/debit-bank', 'IppisTrxnsController@debitBank')->name('ippis.debitBank');
-Route::get('ippis/debit-bank/data', 'IppisTrxnsController@debitBankData')->name('ippis.debitBankData');
-Route::post('ippis/debit-bank/post', 'IppisTrxnsController@debitBankPost')->name('ippis.debitBankPost');
-Route::get('ippis/trxn/{trxnID}/details', 'IppisTrxnsController@trxnDetails')->name('ippis.trxnDetails');
-
-// Inventory
-Route::get('inventory/items', 'InventoryItemController@index')->name('inventory.index');
-Route::get('inventory/items/create', 'InventoryItemController@create')->name('inventory.create');
-Route::post('inventory/items/store', 'InventoryItemController@store')->name('inventory.store');
-Route::get('inventory/items/{id}/store', 'InventoryItemController@edit')->name('inventory.edit');
-Route::put('inventory/items/{id}/update', 'InventoryItemController@update')->name('inventory.update');
-Route::get('inventory/items/{id}/delete', 'InventoryItemController@delete')->name('inventory.delete');
-

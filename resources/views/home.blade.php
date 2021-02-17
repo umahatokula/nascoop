@@ -93,22 +93,30 @@
 </div><!-- end row -->
 
 <div class="row">
-    <div class="col-xl-6">
+    <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Membership by Center</h4>
-                <table class="table table-bordered table-condensed">
+                <h4 class="card-title">Center Summaries</h4>
+                <table class="table table-bordered table-condensed table-responsive-md">
                     <thead>
                         <tr>
                             <th class="text-left">CENTRE</th>
                             <th class="text-center">COUNT</th>
+                            <th class="text-right">Savings</th>
+                            <th class="text-right">LTL</th>
+                            <th class="text-right">STL</th>
+                            <th class="text-right">COMM</th>
                         </tr>
                     </thead>
                     <tbody>
                     @foreach($membersByCenterData as $center => $data)
                         <tr>
                             <td class="text-left"><b>{{ $center  }}</b></td>
-                            <td class="text-center">{{ $data }}</td>
+                            <td class="text-center">{{ $data['numberInCenter'] }}</td>
+                            <td class="text-right">{{ number_format($data['savingsTotalBalance'], 2) }}</td>
+                            <td class="text-right">{{ number_format($data['ltlTotalBalance'], 2) }}</td>
+                            <td class="text-right">{{ number_format($data['stlTotalBalance'], 2) }}</td>
+                            <td class="text-right">{{ number_format($data['comlTotalBalance'], 2) }}</td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -159,4 +167,28 @@
 <!-- dashboard js -->
 <script src="{{ asset('assets/pages/dashboard.int.js') }}"></script>
 <script src="{{ asset('js/Chart.min.js') }}"></script>
+
+<!-- Charting library -->
+<script src="https://unpkg.com/echarts/dist/echarts.min.js"></script>
+<!-- Chartisan -->
+<script src="https://unpkg.com/@chartisan/echarts/dist/chartisan_echarts.js"></script>
+<!-- Your application script -->
+<script>
+    const chart = new Chartisan({
+    el: '#savings_chart',
+    url: "@chart('savings_by_center')",
+    });
+    const chart1 = new Chartisan({
+    el: '#ltl_chart',
+    url: "@chart('long_term_loans_by_center')",
+    });
+    const chart2 = new Chartisan({
+    el: '#stl_chart',
+    url: "@chart('short_term_loans_by_center')",
+    });
+    const chart3 = new Chartisan({
+    el: '#coml_chart',
+    url: "@chart('commodity_loans_by_center')",
+    });
+</script>
 @endsection

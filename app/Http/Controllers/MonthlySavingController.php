@@ -52,7 +52,15 @@ class MonthlySavingController extends Controller
      * Long term loans
      */
     function newSavings($ippis) {
-        $member = Member::where('ippis', $ippis)->first();   
+
+        $member = Member::where('ippis', $ippis)->first(); 
+
+        $data['member'] = $member;
+
+        if(!isset($data['member'])) {
+            Toastr::error('This member does not exist', 'Error', ["positionClass" => "toast-bottom-right"]);
+            return redirect()->route('members.longTermLoans', $ippis);
+        }
 
         // ensure certain bio details are entered
         $ensureMemberDetails = $member->ensureMemberDetails();
@@ -60,12 +68,10 @@ class MonthlySavingController extends Controller
             flash('TO proceed, you must update the following details: Phone number, Email, Paypoint and Centre')->error();
             return redirect()->route('editMember', $ippis);
         endif;
-
-        $data['member'] = $member;
-
-        if(!isset($data['member'])) {
-            Toastr::error('This member does not exist', 'Error', ["positionClass" => "toast-bottom-right"]);
-            return redirect()->route('members.longTermLoans', $ippis);
+        
+        if ($member->is_active == 0) {
+            Toastr::error('This member has been deactivated', 'Error', ["positionClass" => "toast-bottom-right"]);
+            return redirect()->back();
         }
 
         return view('members.monthly_savings.new_monthly_savings', $data);
@@ -95,6 +101,11 @@ class MonthlySavingController extends Controller
         $this->validate($request, $rules, $messages);
 
         $member = Member::where('ippis', $ippis)->first();
+        
+        if ($member->is_active == 0) {
+            Toastr::error('This member has been deactivated', 'Error', ["positionClass" => "toast-bottom-right"]);
+            return redirect()->route('members.dashboard', $member->ippis);
+        }
 
         $lastMonthlySavingRecord = $member->latest_monthly_saving();
 
@@ -180,7 +191,13 @@ class MonthlySavingController extends Controller
      * Withdrawal
      */
     function savingsWithrawal($ippis) {
+
         $member = Member::where('ippis', $ippis)->first(); 
+
+        if(!isset($member)) {
+            Toastr::error('This member does not exist', 'Error', ["positionClass" => "toast-bottom-right"]);
+            return redirect()->route('members.longTermLoans', $ippis);
+        }
 
         // ensure certain bio details are entered
         $ensureMemberDetails = $member->ensureMemberDetails();
@@ -188,10 +205,10 @@ class MonthlySavingController extends Controller
             flash('TO proceed, you must update the following details: Phone number, Email, Paypoint and Centre')->error();
             return redirect()->route('editMember', $ippis);
         endif;
-
-        if(!isset($member)) {
-            Toastr::error('This member does not exist', 'Error', ["positionClass" => "toast-bottom-right"]);
-            return redirect()->route('members.longTermLoans', $ippis);
+        
+        if ($member->is_active == 0) {
+            Toastr::error('This member has been deactivated', 'Error', ["positionClass" => "toast-bottom-right"]);
+            return redirect()->back();
         }
 
         $lastLongTermPayment = $member->latest_long_term_payment();
@@ -241,6 +258,11 @@ class MonthlySavingController extends Controller
         $this->validate($request, $rules, $messages);
 
         $member = Member::where('ippis', $ippis)->first();
+        
+        if ($member->is_active == 0) {
+            Toastr::error('This member has been deactivated', 'Error', ["positionClass" => "toast-bottom-right"]);
+            return redirect()->route('members.dashboard', $member->ippis);
+        }
 
         $lastMonthlySavingRecord = $member->latest_monthly_saving();
 
@@ -415,12 +437,19 @@ class MonthlySavingController extends Controller
      * Long term loans
      */
     function savingsChangeObligation($ippis) {
-        $data['member'] = Member::where('ippis', $ippis)->first();
+        $member = Member::where('ippis', $ippis)->first();
 
-        if(!isset($data['member'])) {
+        if(!isset($member)) {
             Toastr::error('This member does not exist', 'Error', ["positionClass" => "toast-bottom-right"]);
             return redirect()->route('members.longTermLoans', $ippis);
         }
+        
+        if ($member->is_active == 0) {
+            Toastr::error('This member has been deactivated', 'Error', ["positionClass" => "toast-bottom-right"]);
+            return redirect()->back();
+        }
+
+        $data['member'] = $member;
 
         return view('members.monthly_savings.change_obligation', $data);
     }
@@ -449,6 +478,11 @@ class MonthlySavingController extends Controller
         $this->validate($request, $rules, $messages);
 
         $member = Member::where('ippis', $ippis)->first();
+        
+        if ($member->is_active == 0) {
+            Toastr::error('This member has been deactivated', 'Error', ["positionClass" => "toast-bottom-right"]);
+            return redirect()->route('members.dashboard', $member->ippis);
+        }
 
         $monthlySaving                  = new MonthlySaving;
         $monthlySaving->ippis           = $request->ippis;

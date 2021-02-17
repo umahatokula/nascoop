@@ -18,9 +18,6 @@
     <link rel="stylesheet" href="http://cdn.bootcss.com/toastr.js/latest/css/toastr.min.css">
     <link href="{{ asset('css/awesomplete.css') }}" rel="stylesheet" />
     <link href="{{asset('DataTables/datatables.min.css')}}" rel="stylesheet" type="text/css">
-    
-    <script src="https://unpkg.com/vue/dist/vue.js"></script>
-    <script src="https://unpkg.com/vue-toastr/dist/vue-toastr.umd.min.js"></script>
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 
@@ -54,6 +51,9 @@
 
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/jquery-3.3.0.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/js/modernizr.min.js') }}"></script>
     <script src="{{ asset('handsontable/handsontable.full.min.js') }}"></script>
@@ -143,30 +143,6 @@
             // ]
         } );
 
-    </script>
-
-    <!-- Charting library -->
-    <script src="https://unpkg.com/echarts/dist/echarts.min.js"></script>
-    <!-- Chartisan -->
-    <script src="https://unpkg.com/@chartisan/echarts/dist/chartisan_echarts.js"></script>
-    <!-- Your application script -->
-    <script>
-      const chart = new Chartisan({
-        el: '#savings_chart',
-        url: "@chart('savings_by_center')",
-      });
-      const chart1 = new Chartisan({
-        el: '#ltl_chart',
-        url: "@chart('long_term_loans_by_center')",
-      });
-      const chart2 = new Chartisan({
-        el: '#stl_chart',
-        url: "@chart('short_term_loans_by_center')",
-      });
-      const chart3 = new Chartisan({
-        el: '#coml_chart',
-        url: "@chart('commodity_loans_by_center')",
-      });
     </script>
 
     @yield('js')

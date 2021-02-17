@@ -156,6 +156,39 @@ class IppisDeductionsImportController extends Controller
             // ProcessIPPISImport::dispatch($import);
         }
 
+        $deduction_for = $request->deduction_for;
+        $oBDeduction_for = Carbon::parse($deduction_for);
+
+        foreach(Center::all() as $center) {
+            $ippisTrxnObj = IppisTrxn::where('center_id', $center->id)
+            ->where('month', $oBDeduction_for->format('m'))
+            ->where('year', $oBDeduction_for->format('Y'))
+            ->first();
+
+            if (!$ippisTrxnObj) {
+                $ippisTrxnObj                = new IppisTrxn;
+                $ippisTrxnObj->trxn_number   = $trxnNumber;
+                $ippisTrxnObj->center_id     = $center->id;
+                $ippisTrxnObj->month         = $oBDeduction_for->format('m');
+                $ippisTrxnObj->year          = $oBDeduction_for->format('Y');
+                $ippisTrxnObj->deduction_for = $deduction_for;
+                $ippisTrxnObj->ms_dr         = 0;
+                $ippisTrxnObj->ms_cr         = 0;
+                $ippisTrxnObj->ms_bal        = 0;
+                $ippisTrxnObj->ltl_dr        = 0;
+                $ippisTrxnObj->ltl_cr        = 0;
+                $ippisTrxnObj->ltl_bal       = 0;
+                $ippisTrxnObj->stl_dr        = 0;
+                $ippisTrxnObj->stl_cr        = 0;
+                $ippisTrxnObj->stl_bal       = 0;
+                $ippisTrxnObj->coml_dr       = 0;
+                $ippisTrxnObj->coml_cr       = 0;
+                $ippisTrxnObj->coml_bal      = 0;
+                $ippisTrxnObj->done_by       = auth()->user()->ippis;
+                $ippisTrxnObj->save();
+            } 
+        } 
+
         flash('Import successful')->success();
         return redirect()->back();
 

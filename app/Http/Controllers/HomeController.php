@@ -91,9 +91,16 @@ class HomeController extends Controller
 
         // number of members by center chart
         $membersByCenterData = Member::with('member_pay_point')->get();
+
+        $membersByCenterData = Member::join('centers', 'centers.id', '=', 'members.pay_point')
+                                ->orderBy('centers.name')
+                                ->select('members.*') //see PS:
+                                ->get();
+
         $membersByCenterData = $membersByCenterData->groupBy('pay_point')
         ->map(function ($item, $key) {
-            return ($item->count());
+
+            return ['numberInCenter'=> $item->count(), 'savingsTotalBalance' => (new MonthlySaving)->totalBalance($key), 'ltlTotalBalance' => (new LongTerm)->totalBalance($key), 'stlTotalBalance' => (new ShortTerm)->totalBalance($key), 'comlTotalBalance' => (new Commodity)->totalBalance($key)];
         });
 
         $membersByCenterData = $membersByCenterData->keyBy(function ($value, $key) use ($centers) {
@@ -103,6 +110,7 @@ class HomeController extends Controller
                 return 'OTHERS';
             }
         });
+        // dd($membersByCenterData);
 
         $data['membersByCenterData'] = $membersByCenterData;
 
