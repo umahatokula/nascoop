@@ -68,14 +68,19 @@
                         <ul class="submenu megamenu">
                             <li>
                                 <ul>
-                                    @if(auth()->user()->can('generate IPPIS deduction file') && auth()->user()->can('import and reconcile IPPIS deduction file'))
+
+                                    @can('generate IPPIS deduction file')
                                     <li class="has-submenu">
                                         <a href="{{ route('exportToIppis') }}"> Export Deductions </a>
                                     </li>
+                                    @endcan
+                                    
+                                    @can('import and reconcile IPPIS deduction file')
                                     <li class="has-submenu">
                                         <a href="{{ route('importFromIppis') }}"> Import Deductions </a>
                                     </li>
-                                    @endif
+                                    @endcan
+
                                     <li class="has-submenu">
                                         <a href="{{ route('pendingTransactions') }}"> Pending Transactions </a>
                                     </li>
@@ -113,7 +118,7 @@
                     </li>
                     @endcan
 
-                    @can('generate reports')
+                    @hasanyrole('super-admin|treasurer|accountant')
                     <li class="has-submenu"><a href="#"><i class="dripicons-duplicate"></i> Accounting <i class="mdi mdi-chevron-down mdi-drop"></i></a>
                         <ul class="submenu megamenu">
                             <li>
@@ -125,7 +130,9 @@
                                     <li><a href="{{ route('trialBalance') }}"> Trial Balance</a></li>
                                     <li><a href="{{ route('accountingLinkAccounts') }}"> Link Accounts</a></li>
                                     <li><a href="{{ route('accountingQuickBalance') }}"> Quick Balance</a></li>
+                                    @can('direct coa entry')
                                     <li><a href="{{ route('makeLedgerEntry') }}"> Make Ledger Entry</a></li>
+                                    @endcan
                                     <li><a href="{{ route('expensesIndex') }}"> Expenses</a></li>
                                     <li class="has-submenu">
                                         <a href="{{ route('ippis.trxns') }}"> IPPIS Account </a>
@@ -136,7 +143,7 @@
                     </li>
                     @endcan
 
-                    @hasanyrole('president|secretary')
+                    @hasanyrole('super-admin|president|secretary')
                     <li class="has-submenu"><a href="#"><i class="dripicons-duplicate"></i> Settings <i class="mdi mdi-chevron-down mdi-drop"></i></a>
                         <ul class="submenu megamenu">
                             <li>
@@ -161,7 +168,7 @@
                     </li>
                     @endif
 
-                    @hasanyrole('president|secretary')
+                    @hasanyrole('super-admin|secretary')
                     <li class="has-submenu"><a href="#"><i class="dripicons-duplicate"></i> Inventory Mgt <i class="mdi mdi-chevron-down mdi-drop"></i></a>
                         <ul class="submenu megamenu">
                             <li>

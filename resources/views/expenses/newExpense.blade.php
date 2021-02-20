@@ -44,6 +44,7 @@
                         </div>
                     @endif
 
+                    @can('post 3rd party payments')
                     <div class="mt-4">
                     <h5>Record Expense</h5>
                     {!! Form::open(['route' => 'newExpensePost']) !!}
@@ -86,6 +87,7 @@
                         </div>
                         {!! Form::close() !!}
                     </div>
+                    @endcan
                         <!-- <newexpense></newexpense> -->
                     </div>
                 </div>

@@ -15,30 +15,31 @@ class UserTableSeeder extends Seeder
     public function run()
     {
 
-        $member = new Member;
-        $member->ippis = '17679';
-        $member->username = '17679';
-        $member->full_name = 'John Okpanachi';
-        $member->pay_point = 7;
-        $member->save();
+        // $member = new Member;
+        // $member->ippis = '17679';
+        // $member->username = '17679';
+        // $member->full_name = 'John Okpanachi';
+        // $member->pay_point = 7;
+        // $member->save();
 
         // open an account for this member
-        Account::insert([
-            'account_no' => $member->ippis,
-            'entity_type' => 'p',
-        ]);
+        // Account::insert([
+        //     'account_no' => $member->ippis,
+        //     'entity_type' => 'p',
+        // ]);
 
         $user = User::create([
-            'name'      => $member->full_name, 
-            'username'  => $member->ippis, 
-            'ippis'     => $member->ippis, 
-            'password'  => \Hash::make('17679'), 
+            'name'      => 'Super Admin', 
+            'username'  => '000000', 
+            'ippis'     => '000000', 
+            'password'  => \Hash::make('000000'), 
         ]);
 
         // assign role
-        $user->assignRole('member');
-        $user->assignRole('secretary');
-        $user->assignRole('auditor');
-        $user->assignRole('accountant');
+        // $user->assignRole('member');
+        // $user->assignRole('secretary');
+        // $user->assignRole('auditor');
+        // $user->assignRole('accountant');
+        $user->assignRole('super-admin');
     }
 }

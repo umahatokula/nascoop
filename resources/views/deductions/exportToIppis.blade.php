@@ -48,6 +48,8 @@
     <div class="col-md-8">
         <div class="card m-b-30">
             <div class="card-body text-left">
+            
+                @can('generate IPPIS deduction file')
                 <div class="row mb-5">
                     <div class="col-12">
                         <h5 class="page-title m-0">Download IPPIS Deductions Files</h5>
@@ -103,6 +105,7 @@
                         @endif
                     </div>
                 </div>
+                @endcan
             </div>
         </div>
     </div><!-- end col -->

@@ -70,9 +70,11 @@
                     <div class="col-md-6 text-left">
                         <h4>Expenses</h4>
                     </div>
+                    @can('post 3rd party payments')
                     <div class="col-md-6 text-right">
                         <a href="{{ route('newExpense') }}" class="btn btn-primary">Record New Expense</a>
                     </div>
+                    @endcan
                 </div>
 
                 <div class="row mt-3">

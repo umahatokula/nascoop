@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="row">
-        @can('import and reconcile IPPIS deduction file')
+            @can('import and reconcile IPPIS deduction file')
             <div class="col-md-4">
                 <div class="row">
                     <div class="col-12">

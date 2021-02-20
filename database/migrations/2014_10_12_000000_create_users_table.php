@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
                 $table->timestamp('email_verified_at')->nullable();
                 $table->string('password');
                 $table->integer('ippis')->unique();
-                $table->foreign('ippis')->references('ippis')->on('members')->onUpdate('cascade')->onDelete('cascade');
+                // $table->foreign('ippis')->references('ippis')->on('members')->onUpdate('cascade')->onDelete('cascade');
                 $table->integer('is_active')->default(1);
                 $table->rememberToken();
                 $table->timestamps();
@@ -40,7 +40,7 @@ class CreateUsersTable extends Migration
                 $table->string('last_ip_address')->nullable();
                 $table->timestamp('last_seen')->nullable();
                 $table->string('username')->unique()->nullable()->index();
-                $table->foreign('username')->references('username')->on('members')->onUpdate('cascade')->onDelete('cascade');
+                // $table->foreign('username')->references('username')->on('members')->onUpdate('cascade')->onDelete('cascade');
                 $table->boolean('is_superuser')->default(false);
                 $table->string('surname')->nullable();
             });

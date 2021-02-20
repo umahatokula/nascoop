@@ -136,19 +136,23 @@ endif;
                                             <td class="text-center">
 
                                             @if(!$pendingLongTermTnx->longTermLoan->start_processing && !$pendingLongTermTnx->longTermLoan->is_approved)
+                                                @can('start processing pending trxn')
                                                 <a href="{{route('pendingTransactions.startProcessing', [$pendingLongTermTnx->longTermLoan->id, 'ltl'])}}" class="" onclick = "return confirm('Are you sure?')">Start Processing</a> | 
                                                 <a class="text-success" href="{{ route('members.longTermLoansPaymentVoucher', $pendingLongTermTnx->longTermLoan->id) }}" target="_blank">PV</a> |
 
                                                 <a data-toggle="modal" data-keyboard="false" data-target="#myModal"
                                                 data-remote="{{route('members.longLoanDetails', $pendingLongTermTnx->longTermLoan->id)}}"
                                                 href="#" class="">Details</a>
+                                                @endcan
                                             @endif
 
                                             @if($pendingLongTermTnx->longTermLoan->start_processing && !$pendingLongTermTnx->longTermLoan->is_approved)
+                                                @can('authorize pending trxn')
                                                 <a data-toggle="modal" data-keyboard="false" data-target="#myModal"
                                                     data-remote="{{route('pendingTransactions.processApplications', [$pendingLongTermTnx->id, 'ltl'])}}"
                                                     href="#" class="text-danger">Process</a> | 
                                                 <a class="text-success" href="{{ route('members.longTermLoansPaymentVoucher', $pendingLongTermTnx->longTermLoan->id) }}" target="_blank">PV</a>
+                                                @endcan
                                             @endif
                                             </td>
                                         </tr>
@@ -197,12 +201,16 @@ endif;
                                             <td class="text-center">
 
                                             @if(!$pendingShortTermTnx->shortTermLoan->start_processing && !$pendingShortTermTnx->shortTermLoan->is_approved)
+                                                @can('start processing pending trxn')
                                                 <a href="{{route('pendingTransactions.startProcessing', [$pendingShortTermTnx->shortTermLoan->id, 'stl'])}}" class="" onclick = "return confirm('Are you sure?')">Start Processing</a> | 
                                                 <a class="text-success" href="{{ route('members.shortTermLoansPaymentVoucher', $pendingShortTermTnx->shortTermLoan->id) }}" target="_blank">PV</a>
+                                                @endcan
                                             @else
+                                                @can('authorize pending trxn')
                                                 <a data-toggle="modal" data-keyboard="false" data-target="#myModal"
                                                     data-remote="{{route('pendingTransactions.processApplications', [$pendingShortTermTnx->id, 'stl'])}}"
                                                     href="#" class="text-danger">Process</a>
+                                                    @endcan
                                             @endif
                                           
                                             </td>
@@ -254,11 +262,15 @@ endif;
                                             <td class="text-center">
 
                                             @if(!$pendingCommodityTnx->commodity->start_processing && !$pendingCommodityTnx->commodity->is_approved)
+                                                @can('start processing pending trxn')
                                                 <a href="{{route('pendingTransactions.startProcessing', [$pendingCommodityTnx->commodity->id, 'coml'])}}" class="" onclick = "return confirm('Are you sure?')">Start Processing</a>
+                                                @endcan
                                             @else
+                                                @can('authorize pending trxn')
                                                 <a data-toggle="modal" data-keyboard="false" data-target="#myModal"
                                                     data-remote="{{route('pendingTransactions.processApplications', [$pendingCommodityTnx->id, 'coml'])}}"
                                                     href="#" class="text-danger">Process</a>
+                                                    @endcan
                                             @endif
                                           
                                             </td>
@@ -307,15 +319,20 @@ endif;
                                             <td class="text-center">
 
                                                 @if(!$pendingMonthlyTnx->start_processing && !$pendingMonthlyTnx->is_approved)
+                                                
+                                                    @can('start processing pending trxn')
                                                     <a href="{{route('pendingTransactions.startProcessing', [$pendingMonthlyTnx->id, 'savings'])}}" class="" onclick = "return confirm('Are you sure?')">Start Processing</a>
                                                     @if($pendingMonthlyTnx->monthlySaving->is_withdrawal)
                                                      | 
                                                     <a class="text-success" href="{{ route('members.withdrawalPaymentVoucher', $pendingMonthlyTnx->id) }}" target="_blank">PV</a>
                                                     @endif
+                                                    @endcan
                                                 @else
+                                                    @can('authorize pending trxn')
                                                     <a data-toggle="modal" data-keyboard="false" data-target="#myModal"
                                                         data-remote="{{route('pendingTransactions.processApplications', [$pendingMonthlyTnx->id, 'savings'])}}"
                                                         href="#" class="text-danger">Process</a>
+                                                    @endcan
                                                 @endif
 
                                             </td>

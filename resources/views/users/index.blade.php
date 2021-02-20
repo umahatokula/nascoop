@@ -61,7 +61,7 @@
                                         </a>
 
                                         <a data-toggle="modal" data-keyboard="false" data-target="#myModal"
-                                            data-remote="{!! route('members.show', $user->member->ippis) !!}"
+                                            data-remote="{!! route('members.show', $user->ippis) !!}"
                                             href="#" class="btn btn-info btn-sm">Member's Details</a>
                                     </td>
                                 </tr>

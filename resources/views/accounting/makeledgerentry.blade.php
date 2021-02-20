@@ -33,7 +33,9 @@
 
                 <div class="row mt-3">
                     <div class="col-lg-12">
-                        <makeledgerentry></makeledgerentry>
+                        @can('direct coa entry')
+                            <makeledgerentry></makeledgerentry>
+                        @endcan
                     </div>
                 </div>
 

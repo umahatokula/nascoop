@@ -21,7 +21,7 @@ class AccountController extends Controller
 
     public function listAccounts() {
 
-        $accounts = Ledger_Internal::all();
+        $accounts = Ledger_Internal::where('usage', 'header')->get();
 
         dd($this->accountsTree($accounts));
 
@@ -29,7 +29,7 @@ class AccountController extends Controller
 
     public function accountsTree($accounts) {
 
-        // $tree = [];
+        $tree = [];
 
         foreach ($accounts as $account) {
             $children = $account->getChildren();
@@ -37,11 +37,7 @@ class AccountController extends Controller
             if ($children->count() > 0) {
                 $tree[] = [$account->account_name, $children];
                 $this->accountsTree($children);
-            } else {
-                $parent = $accounts->where('id', $account->parent_id)->first();
-
-                $tree[] = [$parent, $account->account_name];
-            } 
+            }
         }
 
         return $tree;

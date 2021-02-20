@@ -111,6 +111,8 @@ class LedgerController extends Controller
         foreach($rows as $row) {
             // dd($row);
 
+            if (!is_numeric($row[0])) { continue; }
+
             $ippis                  = $row[0];
             $lname                  = ($row[1]);
             $fname                  = ($row[2]);
