@@ -33,7 +33,11 @@
 
                 <div class="row mt-3">
                     <div class="col-lg-12">
+                    
+                    @role('accountant')
                     <quickbalance></quickbalance>
+                    @endrole
+                    
                     </div>
                 </div>
 

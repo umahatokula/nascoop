@@ -31,6 +31,7 @@
         <div class="card m-b-30">
             <div class="card-body">
 
+                @hasanyrole('super-admin|accountant')
                 <div class="row">
                     <div class="col-md-12">
                         {!! Form::open(['route' => 'trialBalance', 'method' => 'get']) !!}
@@ -61,38 +62,42 @@
                     
                         <div class="row">
                         <div class="col-12">
-                        <table class="table table-bordered table-striped table-responsive-md">
-                            <thead>
-                                <tr>
-                                    <th>Code</th>
-                                    <th>Account Name</th>
-                                    <th class="text-right">Dr</th>
-                                    <th class="text-right">Cr</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($trialBalances as $trialBalance)
-                                <tr style="line-height: 0;">
-                                    @if($trialBalance[0]->usage == 'header')
-                                        <td>{{ $trialBalance[0]->ledger_no }}</td>
-                                        <td>{{ $trialBalance[0]->account_name }}</td>
-                                    @else
-                                        <td><a href="{{ $trialBalance[0]->usage == 'detail' ? route('accountLedger', $trialBalance[0]->ledger_no) : '#' }}">{{ $trialBalance[0]->ledger_no }}</a></td>
-                                        <td><a href="{{ $trialBalance[0]->usage == 'detail' ? route('accountLedger', $trialBalance[0]->ledger_no) : '#' }}">{{ $trialBalance[0]->account_name }}</a></td>
-                                    @endif
 
-                                    <td class="text-right"><b>{{ $trialBalance[0]->show_total_amount_in_report ? number_format($trialBalance[2], 2) : '' }}</b></td>
-                                    <td class="text-right"><b>{{ $trialBalance[0]->show_total_amount_in_report ? number_format($trialBalance[3], 2) : '' }}</b></td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                            <table class="table table-bordered table-striped table-responsive-md">
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Account Name</th>
+                                        <th class="text-right">Dr</th>
+                                        <th class="text-right">Cr</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($trialBalances as $trialBalance)
+                                    <tr style="line-height: 0;">
+                                        @if($trialBalance[0]->usage == 'header')
+                                            <td>{{ $trialBalance[0]->ledger_no }}</td>
+                                            <td>{{ $trialBalance[0]->account_name }}</td>
+                                        @else
+                                            <td><a href="{{ $trialBalance[0]->usage == 'detail' ? route('accountLedger', $trialBalance[0]->ledger_no) : '#' }}">{{ $trialBalance[0]->ledger_no }}</a></td>
+                                            <td><a href="{{ $trialBalance[0]->usage == 'detail' ? route('accountLedger', $trialBalance[0]->ledger_no) : '#' }}">{{ $trialBalance[0]->account_name }}</a></td>
+                                        @endif
+
+                                        <td class="text-right"><b>{{ $trialBalance[0]->show_total_amount_in_report ? number_format($trialBalance[2], 2) : '' }}</b></td>
+                                        <td class="text-right"><b>{{ $trialBalance[0]->show_total_amount_in_report ? number_format($trialBalance[3], 2) : '' }}</b></td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
 
                         </div>
                         </div>
                         <!-- <trialbalance></trialbalance> -->
                     </div>
                 </div>
+                @else
+                <p>You do not have permission to view this page</p>
+                @endrole
 
             </div>
         </div>

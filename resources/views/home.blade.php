@@ -109,14 +109,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                    @foreach($membersByCenterData as $center => $data)
+                    @foreach($centerTotals as $center => $centerTotal)
                         <tr>
                             <td class="text-left"><b>{{ $center  }}</b></td>
-                            <td class="text-center">{{ $data['numberInCenter'] }}</td>
-                            <td class="text-right">{{ number_format($data['savingsTotalBalance'], 2) }}</td>
-                            <td class="text-right">{{ number_format($data['ltlTotalBalance'], 2) }}</td>
-                            <td class="text-right">{{ number_format($data['stlTotalBalance'], 2) }}</td>
-                            <td class="text-right">{{ number_format($data['comlTotalBalance'], 2) }}</td>
+                            <td class="text-center">{{ $centerTotal['numberInCenter'] }}</td>
+                            <td class="text-right">{{ number_format($centerTotal['savingsTotalBalance'], 2) }}</td>
+                            <td class="text-right">{{ number_format($centerTotal['ltlTotalBalance'], 2) }}</td>
+                            <td class="text-right">{{ number_format($centerTotal['stlTotalBalance'], 2) }}</td>
+                            <td class="text-right">{{ number_format($centerTotal['comlTotalBalance'], 2) }}</td>
                         </tr>
                     @endforeach
                     </tbody>

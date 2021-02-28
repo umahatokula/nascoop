@@ -8,6 +8,8 @@ use Carbon\Carbon;
 
 class LedgerInternalTransaction extends Model
 {
+    protected $dates = ['value_date'];
+
     /**
      * Convert date_time to human readable format.
      *
@@ -17,7 +19,7 @@ class LedgerInternalTransaction extends Model
     public function getDateTimeAttribute($value)
     {
         $date_array = explode(" ", $value);
-        $date = date("Y-m-d H:i:s",$date_array[1]);
+        $date = date("Y-m-d H:i:s", $date_array[1]);
 
         return Carbon::parse($date);
     }

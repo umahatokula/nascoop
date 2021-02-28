@@ -4,6 +4,7 @@
     {!! Form::hidden('trxn_number', $savings->trxn_number) !!}
     {!! Form::hidden('trxn_type', $savings->trxn_type) !!}
     {!! Form::hidden('ippis', $savings->ippis) !!}
+    {!! Form::hidden('value_date', $savings->is_withdrawal == 0 ? $savings->deposit_date : $savings->withdrawal_date) !!}
     {!! Form::hidden('tab', 'savings') !!}
     {!! Form::hidden('amount', $savings->trxn_type == 'savings' ? $savings->cr : $savings->dr) !!}
 

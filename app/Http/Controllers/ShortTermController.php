@@ -87,7 +87,7 @@ class ShortTermController extends Controller
         $ensureMemberDetails = $member->ensureMemberDetails();
         if (!$ensureMemberDetails):            
             flash('To proceed, you must update the following details: Phone number, Email, Paypoint and Centre')->error();
-            return redirect()->route('editMember', $ippis);
+            // return redirect()->route('editMember', $ippis);
         endif;
 
         if(!isset($data['member'])) {
@@ -333,7 +333,7 @@ class ShortTermController extends Controller
         $ensureMemberDetails = $member->ensureMemberDetails();
         if (!$ensureMemberDetails):            
             flash('TO proceed, you must update the following details: Phone number, Email, Paypoint and Centre')->error();
-            return redirect()->route('editMember', $ippis);
+            // return redirect()->route('editMember', $ippis);
         endif;
 
         if(!isset($member)) {
@@ -489,7 +489,7 @@ class ShortTermController extends Controller
 
             // fire event to save trxn in ledger transactions
             $ledgerInternal = new Ledger_Internal;
-            $ledgerInternal->recordSTLRepaymentViaSavings($member, $msPayment->dr, $member->ippis.' STL Repay. Sav.');
+            $ledgerInternal->recordSTLRepaymentViaSavings($member, $msPayment->dr, $member->ippis.' STL Repay. Sav.', $request->deposit_date);
 
             $activityLog = new ActivityLog;
             $activityLog->logThis($trxnNumber, $member->ippis, '(STL Repayment from Savings) '.$request->ref, $request->total_amount, 1, auth()->user()->ippis);

@@ -193,7 +193,7 @@ class MembersController extends Controller
             'monthly_savings' => 'required',
             'pay_point' => 'required',
             'phone' => 'required',
-            'email' => 'email|unique:member,email',
+            'email' => 'email|unique:members,email',
 
         ];
 
@@ -432,7 +432,8 @@ class MembersController extends Controller
      * @param \App\Member $member
      * @return boolean
      */
-    public function performDeactivationCheck($member) {
+    public function performDeactivationCheck(Member $member) {
+
         $MonthlySavingPayment = $member->latest_monthly_savings_payment();
         $LongTermPayment = $member->latest_long_term_payment();
         $ShortTermPayment = $member->latest_short_term_payment();
@@ -644,6 +645,9 @@ class MembersController extends Controller
         return true;
     }
 
+    /**
+     * Get the balances of member accounts at the point of attempted deactivation
+     */
     public function deactivationSummary($ippis) {
         $member = Member::where('ippis', $ippis)->firstOrFail();
 
@@ -659,7 +663,7 @@ class MembersController extends Controller
     }
 
     /**
-     * Import Ledger.
+     * Show form for member bio update
      *
      * @param  \App\Ledger  $ledger
      * @return \Illuminate\Http\Response
@@ -670,7 +674,7 @@ class MembersController extends Controller
     }
 
     /**
-     * Import Ledger.
+     * Post member update information
      *
      * @param  \App\Ledger  $ledger
      * @return \Illuminate\Http\Response

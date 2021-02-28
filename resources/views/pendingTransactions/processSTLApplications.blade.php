@@ -4,6 +4,7 @@
     {!! Form::hidden('trxn_number', $loan->trxn_number) !!}
     {!! Form::hidden('trxn_type', $loan->trxn_type) !!}
     {!! Form::hidden('ippis', $loan->ippis) !!}
+    {!! Form::hidden('value_date', $loan->trxn_type == 'stl' ? $loan->loan_date : $loan->deposit_date) !!}
     {!! Form::hidden('tab', 'stl') !!}
     {!! Form::hidden('amount', $loan->trxn_type == 'stl' ? $loan->dr : $loan->cr) !!}
 

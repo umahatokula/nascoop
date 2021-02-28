@@ -49,7 +49,6 @@
                   {{r.value}}
                 </option>
               </select>
-              <v-select label="value" :options="repayment_modes" @input="onSelectRepaymentType($event)"></v-select>
               <small v-if="errors.repayment_mode" class="text-danger">{{ errors.repayment_mode[0] }}</small>
             </div>
           </div>

@@ -23,13 +23,14 @@ class TransactionOccured
     public $account_type_ext;
     public $amount;
     public $description;
+    public $value_date;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($ledger_no_1, $ledger_no_2, $date_time, $xact_type_code, $xact_type_code_ext, $account_no, $account_type_ext, $amount, $description)
+    public function __construct($ledger_no_1, $ledger_no_2, $date_time, $xact_type_code, $xact_type_code_ext, $account_no, $account_type_ext, $amount, $description, $value_date)
     {
         $this->ledger_no_1        = $ledger_no_1;
         $this->ledger_no_2        = $ledger_no_2;
@@ -40,6 +41,7 @@ class TransactionOccured
         $this->account_type_ext   = $account_type_ext;
         $this->amount             = $amount;
         $this->description        = $description;
+        $this->value_date         = $value_date;
     }
 
     /**

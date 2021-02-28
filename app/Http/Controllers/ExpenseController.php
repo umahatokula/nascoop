@@ -144,7 +144,7 @@ class ExpenseController extends Controller
             $expense->is_authorized  = 1;
 
             // f
-            event(new TransactionOccured($expense->credit_account, $expense->debit_account, microtime(), 'cr', 'manual_entry', null, null, $expense->amount, $expense->description));
+            event(new TransactionOccured($expense->credit_account, $expense->debit_account, microtime(), 'cr', 'manual_entry', null, null, $expense->amount, $expense->description, $expense->date));
 
         } else {
             $expense->is_authorized  = 2;

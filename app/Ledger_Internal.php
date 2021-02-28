@@ -180,7 +180,7 @@ class Ledger_Internal extends Model
     /**
      * Function to post a savings (dp_S) trxn to DB
      */
-    public function recordDepositToSavings(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordDepositToSavings(Member $member, $amount, String $description, $bank = NULL, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'dp_S')->first();
 
@@ -197,7 +197,7 @@ class Ledger_Internal extends Model
         $members_savings = $ledger_no;
         // $bank = $ledger_no_dr;
     
-        event(new TransactionOccured($members_savings, $bank, microtime(), 'cr', 'dp_S', $member->ippis, 'saving', $amount, $description));
+        event(new TransactionOccured($members_savings, $bank, microtime(), 'cr', 'dp_S', $member->ippis, 'saving', $amount, $description, $value_date));
 
         return 1;
     }
@@ -205,7 +205,7 @@ class Ledger_Internal extends Model
     /**
      * Function to record withdrawal from savings (wd_S) trxn to DB
      */
-    public function recordWithdrawalFromSavings(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordWithdrawalFromSavings(Member $member, $amount, String $description, $bank = NULL, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'wd_S')->first();
 
@@ -222,7 +222,7 @@ class Ledger_Internal extends Model
         // $bank = $ledger_no_dr;
         $members_savings = $ledger_no;
     
-        event(new TransactionOccured($bank, $members_savings, microtime(), 'cr', 'wd_S', $member->ippis, 'saving', $amount, $description));
+        event(new TransactionOccured($bank, $members_savings, microtime(), 'cr', 'wd_S', $member->ippis, 'saving', $amount, $description, $value_date));
 
         return 1;
     }
@@ -230,7 +230,7 @@ class Ledger_Internal extends Model
     /**
      * Function to record Interest on withdrawal from savings trxn to DB
      */
-    public function recordSavingsWithdrawalInterest(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordSavingsWithdrawalInterest(Member $member, $amount, String $description, $bank = NULL, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'wd_interest')->first();
 
@@ -246,7 +246,7 @@ class Ledger_Internal extends Model
         $interest_account = $ledger_no_cr;
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured($interest_account, $savings, microtime(), 'cr', 'wd_interest', $member->ippis, 'wd_interest', $amount, $description));
+        event(new TransactionOccured($interest_account, $savings, microtime(), 'cr', 'wd_interest', $member->ippis, 'wd_interest', $amount, $description, $value_date));
 
         return 1;
     }
@@ -254,7 +254,7 @@ class Ledger_Internal extends Model
     /**
      * Function to record Processing Fee on Loan trxn to DB
      */
-    public function recordSavingsWithdrawalProcessingFee(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordSavingsWithdrawalProcessingFee(Member $member, $amount, String $description, $bank = NULL, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'wd_processing_fee')->first();
 
@@ -270,7 +270,7 @@ class Ledger_Internal extends Model
         $processing_fee_account = $ledger_no_cr;
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured($processing_fee_account, $savings, microtime(), 'cr', 'wd_processing_fee', $member->ippis, 'wd_processing_fee', $amount, $description));
+        event(new TransactionOccured($processing_fee_account, $savings, microtime(), 'cr', 'wd_processing_fee', $member->ippis, 'wd_processing_fee', $amount, $description, $value_date));
 
         return 1;
     }
@@ -278,7 +278,7 @@ class Ledger_Internal extends Model
     /**
      * Function to record Bank Transfer Charge trxn to DB
      */
-    public function recordSavingsWithdrawalBankTransferCharge(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordSavingsWithdrawalBankTransferCharge(Member $member, $amount, String $description, $bank = NULL, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'savings_transfer_charges')->first();
 
@@ -294,7 +294,7 @@ class Ledger_Internal extends Model
         $transfer_fee_account = $ledger_no_cr;
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured($transfer_fee_account, $savings, microtime(), 'cr', 'savings_transfer_charges', $member->ippis, 'savings_transfer_charges', $amount, $description));
+        event(new TransactionOccured($transfer_fee_account, $savings, microtime(), 'cr', 'savings_transfer_charges', $member->ippis, 'savings_transfer_charges', $amount, $description, $value_date));
 
         return 1;
     }
@@ -306,7 +306,7 @@ class Ledger_Internal extends Model
     /**
      * Function to record Long Term Loan (ltl) trxn to DB
      */
-    public function recordLTL(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordLTL(Member $member, $amount, String $description, $bank = NULL, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'ltl')->first();
 
@@ -324,7 +324,7 @@ class Ledger_Internal extends Model
         $loan_balance = $ledger_no;
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured($bank, $loan_balance, microtime(), 'cr', 'ltl', $member->ippis, 'ltl', $amount, $description));
+        event(new TransactionOccured($bank, $loan_balance, microtime(), 'cr', 'ltl', $member->ippis, 'ltl', $amount, $description, $value_date));
 
         return 1;
     }
@@ -332,7 +332,7 @@ class Ledger_Internal extends Model
     /**
      * Function to record Long Term Loan Repayment via Deposit (ltl_Rp_Deposit) trxn to DB
      */
-    public function recordLTLRepaymentViaDeposit(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordLTLRepaymentViaDeposit(Member $member, $amount, String $description, $bank = NULL, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'ltl_Rp_Deposit')->first();
 
@@ -350,7 +350,7 @@ class Ledger_Internal extends Model
         $loan_balance = $ledger_no;
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured($loan_balance, $bank, microtime(), 'cr', 'ltl_Rp_Deposit', $member->ippis, 'ltl_Rp_Deposit', $amount, $description));
+        event(new TransactionOccured($loan_balance, $bank, microtime(), 'cr', 'ltl_Rp_Deposit', $member->ippis, 'ltl_Rp_Deposit', $amount, $description, $value_date));
 
         return 1;
     }
@@ -358,7 +358,7 @@ class Ledger_Internal extends Model
     /**
      * Function to record Long Term Loan Repayment via Savings (ltl_Rp_Savings) trxn to DB
      */
-    public function recordLTLRepaymentViaSavings(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordLTLRepaymentViaSavings(Member $member, $amount, String $description, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'ltl_Rp_Savings')->first();
 
@@ -376,7 +376,7 @@ class Ledger_Internal extends Model
         $loan_balance = $ledger_no;
         // dd($loan_balance, $members_savings);
 
-        event(new TransactionOccured($loan_balance, $members_savings, microtime(), 'cr', 'ltl_Rp_Savings', $member->ippis, 'ltl_Rp_Savings', $amount, $description));
+        event(new TransactionOccured($loan_balance, $members_savings, microtime(), 'cr', 'ltl_Rp_Savings', $member->ippis, 'ltl_Rp_Savings', $amount, $description, $value_date));
 
         return 1;
     }
@@ -384,7 +384,7 @@ class Ledger_Internal extends Model
     /**
      * Function to record Interest on LTL trxn to DB
      */
-    public function recordLTLInterest(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordLTLInterest(Member $member, $amount, String $description, $bank = NULL, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'ltl_interest')->first();
 
@@ -400,7 +400,7 @@ class Ledger_Internal extends Model
         $interest_account = $ledger_no_cr;
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured($interest_account, $ltl, microtime(), 'cr', 'ltl_interest', $member->ippis, 'ltl_interest', $amount, $description));
+        event(new TransactionOccured($interest_account, $ltl, microtime(), 'cr', 'ltl_interest', $member->ippis, 'ltl_interest', $amount, $description, $value_date));
 
         return 1;
     }
@@ -408,7 +408,7 @@ class Ledger_Internal extends Model
     /**
      * Function to record Processing Fee on Loan trxn to DB
      */
-    public function recordLTLProcessingFee(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordLTLProcessingFee(Member $member, $amount, String $description, $bank = NULL, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'ltl_processing_fee')->first();
 
@@ -424,7 +424,7 @@ class Ledger_Internal extends Model
         $processing_fee_account = $ledger_no_cr;
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured($processing_fee_account, $ltl, microtime(), 'cr', 'ltl_processing_fee', $member->ippis, 'ltl_processing_fee', $amount, $description));
+        event(new TransactionOccured($processing_fee_account, $ltl, microtime(), 'cr', 'ltl_processing_fee', $member->ippis, 'ltl_processing_fee', $amount, $description, $value_date));
 
         return 1;
     }
@@ -432,7 +432,7 @@ class Ledger_Internal extends Model
     /**
      * Function to record Bank Transfer Charge trxn to DB
      */
-    public function recordLTLBankTransferCharge(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordLTLBankTransferCharge(Member $member, $amount, String $description, $bank = NULL, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'ltl_transfer_charges')->first();
 
@@ -448,7 +448,7 @@ class Ledger_Internal extends Model
         $transfer_fee_account = $ledger_no_cr;
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured($transfer_fee_account, $ltl, microtime(), 'cr', 'ltl_transfer_charges', $member->ippis, 'ltl_transfer_charges', $amount, $description));
+        event(new TransactionOccured($transfer_fee_account, $ltl, microtime(), 'cr', 'ltl_transfer_charges', $member->ippis, 'ltl_transfer_charges', $amount, $description, $value_date));
 
         return 1;
     }
@@ -456,7 +456,7 @@ class Ledger_Internal extends Model
     /**
      * Function to record Long Term Loan Repayment via Savings (ltl_Rp_Savings) trxn to DB
      */
-    public function recordLTLAdjustment(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordLTLAdjustment(Member $member, $amount, String $description, $bank = NULL, $value_date = NULL) : int {
         
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'ltl_Adjustment')->first();
 
@@ -472,7 +472,7 @@ class Ledger_Internal extends Model
         $loan_balance = $ledger_no_cr;
         // dd($loan_balance, $bank, $amount);
 
-        event(new TransactionOccured($loan_balance, $ltl, microtime(), 'cr', 'ltl_Adjustment', $member->ippis, 'ltl_Adjustment', $amount, $description));
+        event(new TransactionOccured($loan_balance, $ltl, microtime(), 'cr', 'ltl_Adjustment', $member->ippis, 'ltl_Adjustment', $amount, $description, $value_date));
 
         return 1;
     }
@@ -485,7 +485,7 @@ class Ledger_Internal extends Model
     /**
      * Function to record Short Term Loan (stl) trxn to DB
      */
-    public function recordSTL(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordSTL(Member $member, $amount, String $description, $bank = NULL, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'stl')->first();
 
@@ -503,7 +503,7 @@ class Ledger_Internal extends Model
         $loan_balance = $ledger_no;
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured($bank, $loan_balance, microtime(), 'cr', 'stl', $member->ippis, 'stl', $amount, $description));
+        event(new TransactionOccured($bank, $loan_balance, microtime(), 'cr', 'stl', $member->ippis, 'stl', $amount, $description, $value_date));
 
         return 1;
     }
@@ -511,7 +511,7 @@ class Ledger_Internal extends Model
     /**
      * Function to record Long Term Loan Repayment via Deposit (ltl_Rp_Deposit) trxn to DB
      */
-    public function recordSTLRepaymentViaDeposit(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordSTLRepaymentViaDeposit(Member $member, $amount, String $description, $bank = NULL, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'stl_Rp_Deposit')->first();
 
@@ -529,7 +529,7 @@ class Ledger_Internal extends Model
         $loan_balance = $ledger_no;
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured($loan_balance, $bank, microtime(), 'cr', 'stl_Rp_Deposit', $member->ippis, 'stl_Rp_Deposit', $amount, $description));
+        event(new TransactionOccured($loan_balance, $bank, microtime(), 'cr', 'stl_Rp_Deposit', $member->ippis, 'stl_Rp_Deposit', $amount, $description, $value_date));
 
         return 1;
     }
@@ -537,7 +537,7 @@ class Ledger_Internal extends Model
     /**
      * Function to record Long Term Loan Repayment via Savings (stl_Rp_Savings) trxn to DB
      */
-    public function recordSTLRepaymentViaSavings(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordSTLRepaymentViaSavings(Member $member, $amount, String $description, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'stl_Rp_Savings')->first();
 
@@ -555,7 +555,7 @@ class Ledger_Internal extends Model
         $loan_balance = $ledger_no;
         // dd($loan_balance, $members_savings);
 
-        event(new TransactionOccured($loan_balance, $members_savings, microtime(), 'cr', 'stl_Rp_Savings', $member->ippis, 'stl_Rp_Savings', $amount, $description));
+        event(new TransactionOccured($loan_balance, $members_savings, microtime(), 'cr', 'stl_Rp_Savings', $member->ippis, 'stl_Rp_Savings', $amount, $description, $value_date));
 
         return 1;
     }
@@ -563,7 +563,7 @@ class Ledger_Internal extends Model
     /**
      * Function to record Interest on STL trxn to DB
      */
-    public function recordSTLInterest(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordSTLInterest(Member $member, $amount, String $description, $bank = NULL, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'stl_interest')->first();
 
@@ -579,7 +579,7 @@ class Ledger_Internal extends Model
         $interest_account = $ledger_no_cr;
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured($interest_account, $stl, microtime(), 'cr', 'stl_interest', $member->ippis, 'stl_interest', $amount, $description));
+        event(new TransactionOccured($interest_account, $stl, microtime(), 'cr', 'stl_interest', $member->ippis, 'stl_interest', $amount, $description, $value_date));
 
         return 1;
     }
@@ -587,7 +587,7 @@ class Ledger_Internal extends Model
     /**
      * Function to record Processing Fee on Loan trxn to DB
      */
-    public function recordSTLProcessingFee(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordSTLProcessingFee(Member $member, $amount, String $description, $bank = NULL, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'Stl_processing_fee')->first();
 
@@ -603,7 +603,7 @@ class Ledger_Internal extends Model
         $processing_fee_account = $ledger_no_cr;
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured($processing_fee_account, $Stl, microtime(), 'cr', 'Stl_processing_fee', $member->ippis, 'Stl_processing_fee', $amount, $description));
+        event(new TransactionOccured($processing_fee_account, $Stl, microtime(), 'cr', 'Stl_processing_fee', $member->ippis, 'Stl_processing_fee', $amount, $description, $value_date));
 
         return 1;
     }
@@ -611,7 +611,7 @@ class Ledger_Internal extends Model
     /**
      * Function to record Bank Transfer Charge trxn to DB
      */
-    public function recordSTLBankTransferCharge(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordSTLBankTransferCharge(Member $member, $amount, String $description, $bank = NULL, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'stl_transfer_charges')->first();
 
@@ -627,7 +627,7 @@ class Ledger_Internal extends Model
         $transfer_fee_account = $ledger_no_cr;
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured($transfer_fee_account, $stl, microtime(), 'cr', 'stl_transfer_charges', $member->ippis, 'stl_transfer_charges', $amount, $description));
+        event(new TransactionOccured($transfer_fee_account, $stl, microtime(), 'cr', 'stl_transfer_charges', $member->ippis, 'stl_transfer_charges', $amount, $description, $value_date));
 
         return 1;
     }
@@ -635,7 +635,7 @@ class Ledger_Internal extends Model
     /**
      * Function to record Long Term Loan Repayment via Savings (stl_Rp_Savings) trxn to DB
      */
-    public function recordSTLAdjustment(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordSTLAdjustment(Member $member, $amount, String $description, $bank = NULL, $value_date = NULL) : int {
         
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'stl_Adjustment')->first();
 
@@ -651,7 +651,7 @@ class Ledger_Internal extends Model
         $loan_balance = $ledger_no_cr;
         // dd($loan_balance, $bank, $amount);
 
-        event(new TransactionOccured($loan_balance, $stl, microtime(), 'cr', 'stl_Adjustment', $member->ippis, 'stl_Adjustment', $amount, $description));
+        event(new TransactionOccured($loan_balance, $stl, microtime(), 'cr', 'stl_Adjustment', $member->ippis, 'stl_Adjustment', $amount, $description, $value_date));
 
         return 1;
     }
@@ -665,7 +665,7 @@ class Ledger_Internal extends Model
     /**
      * Function to record Commodity Loan (coml) trxn to DB
      */
-    public function recordCOML(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordCOML(Member $member, $amount, String $description, $bank = NULL, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'coml')->first();
 
@@ -682,7 +682,7 @@ class Ledger_Internal extends Model
         $sales = $stock_account;
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured($sales, $loan_balance, microtime(), 'cr', 'coml', $member->ippis, 'coml', $amount, $description));
+        event(new TransactionOccured($sales, $loan_balance, microtime(), 'cr', 'coml', $member->ippis, 'coml', $amount, $description, $value_date));
 
         return 1;
     }
@@ -690,7 +690,7 @@ class Ledger_Internal extends Model
     /**
      * Function to record Commodity Loan Repayment via Deposit (coml_Rp_Deposit) trxn to DB
      */
-    public function recordCOMLRepaymentViaDeposit(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordCOMLRepaymentViaDeposit(Member $member, $amount, String $description, $bank = NULL, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'coml_Rp_Deposit')->first();
 
@@ -708,7 +708,7 @@ class Ledger_Internal extends Model
         $loan_balance = $ledger_no;
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured($loan_balance, $bank, microtime(), 'cr', 'coml_Rp_Deposit', $member->ippis, 'coml', $amount, $description));
+        event(new TransactionOccured($loan_balance, $bank, microtime(), 'cr', 'coml_Rp_Deposit', $member->ippis, 'coml', $amount, $description, $value_date));
 
         return 1;
     }
@@ -716,7 +716,7 @@ class Ledger_Internal extends Model
     /**
      * Function to record Commodity Loan Repayment via Savings (coml_Rp_Savings) trxn to DB
      */
-    public function recordCOMLRepaymentViaSavings(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordCOMLRepaymentViaSavings(Member $member, $amount, String $description, $bank = NULL, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'coml_Rp_Savings')->first();
 
@@ -733,7 +733,7 @@ class Ledger_Internal extends Model
         $loan_balance = $ledger_no;
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured($loan_balance, $members_savings, microtime(), 'cr', 'coml_Rp_Savings', $member->ippis, 'coml', $amount, $description));
+        event(new TransactionOccured($loan_balance, $members_savings, microtime(), 'cr', 'coml_Rp_Savings', $member->ippis, 'coml', $amount, $description, $value_date));
 
         return 1;
     }
@@ -741,7 +741,7 @@ class Ledger_Internal extends Model
     /**
      * Function to record Interest on COML trxn to DB
      */
-    public function recordCOMLInterest(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordCOMLInterest(Member $member, $amount, String $description, $bank = NULL, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'coml_interest')->first();
 
@@ -759,7 +759,7 @@ class Ledger_Internal extends Model
         $interest_account = $ledger_no;
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured($interest_account, $coml, microtime(), 'cr', 'coml_interest', $member->ippis, 'coml_interest', $amount, $description));
+        event(new TransactionOccured($interest_account, $coml, microtime(), 'cr', 'coml_interest', $member->ippis, 'coml_interest', $amount, $description, $value_date));
 
         return 1;
     }
@@ -767,7 +767,7 @@ class Ledger_Internal extends Model
     /**
      * Function to post a shares (buy_shares) trxn to DB
      */
-    public function recordSharesBought(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordSharesBought(Member $member, $amount, String $description, $bank = NULL, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'buy_shares')->first();
 
@@ -784,7 +784,7 @@ class Ledger_Internal extends Model
         $shares_account = $ledger_no;
         // $bank = $ledger_no_dr;
     
-        event(new TransactionOccured($shares_account, $bank, microtime(), 'cr', 'buy_shares', $member->ippis, 'buy_shares', $amount, $description));
+        event(new TransactionOccured($shares_account, $bank, microtime(), 'cr', 'buy_shares', $member->ippis, 'buy_shares', $amount, $description, $value_date));
 
         return 1;
     }
@@ -792,7 +792,7 @@ class Ledger_Internal extends Model
     /**
      * Function to post a shares (buy_shares) trxn to DB
      */
-    public function recordSharesLiquidation(Member $member, $amount, String $description, $bank = NULL) : int {
+    public function recordSharesLiquidation(Member $member, $amount, String $description, $bank = NULL, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'buy_shares')->first();
 
@@ -809,7 +809,7 @@ class Ledger_Internal extends Model
         $shares_account = $ledger_no;
         // $bank = $ledger_no_dr;
     
-        event(new TransactionOccured($shares_account, $bank, microtime(), 'cr', 'buy_shares', $member->ippis, 'buy_shares', $amount, $description));
+        event(new TransactionOccured($shares_account, $bank, microtime(), 'cr', 'buy_shares', $member->ippis, 'buy_shares', $amount, $description, $value_date));
 
         return 1;
     }
@@ -817,7 +817,7 @@ class Ledger_Internal extends Model
     /**
      * Function to post NON remittance by IPPIS for savings
      */
-    public function recordIPPISNonRemittanceSavings($amount, String $description, String $centerName) : int {
+    public function recordIPPISNonRemittanceSavings($amount, String $description, String $centerName, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'ippis_non_remittance_savings')->first();
 
@@ -830,7 +830,7 @@ class Ledger_Internal extends Model
         $ledger_no_dr = $trxnType->associated_trxns['dr'];
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured($ledger_no_cr, null, microtime(), 'cr', 'ippis_non_remittance_savings', null, 'ippis_non_remittance_savings', $amount, $description));
+        event(new TransactionOccured($ledger_no_cr, null, microtime(), 'cr', 'ippis_non_remittance_savings', null, 'ippis_non_remittance_savings', $amount, $description, $value_date));
 
         return 1;
     }
@@ -838,7 +838,7 @@ class Ledger_Internal extends Model
     /**
      * Function to post NON remittance by IPPIS for savings
      */
-    public function recordIPPISNonRemittanceLTL($amount, String $description, String $centerName) : int {
+    public function recordIPPISNonRemittanceLTL($amount, String $description, String $centerName, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'ippis_non_remittance_ltl')->first();
 
@@ -851,7 +851,7 @@ class Ledger_Internal extends Model
         $ledger_no_cr = $trxnType->associated_trxns['cr'];
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured(null, $ledger_no_dr, microtime(), 'cr', 'ippis_non_remittance_ltl', null, 'ippis_non_remittance_ltl', $amount, $description));
+        event(new TransactionOccured(null, $ledger_no_dr, microtime(), 'cr', 'ippis_non_remittance_ltl', null, 'ippis_non_remittance_ltl', $amount, $description, $value_date));
 
         return 1;
     }
@@ -859,7 +859,7 @@ class Ledger_Internal extends Model
     /**
      * Function to post NON remittance by IPPIS for savings
      */
-    public function recordIPPISNonRemittanceSTL($amount, String $description, String $centerName) : int {
+    public function recordIPPISNonRemittanceSTL($amount, String $description, String $centerName, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'ippis_non_remittance_stl')->first();
 
@@ -872,7 +872,7 @@ class Ledger_Internal extends Model
         $ledger_no_cr = $trxnType->associated_trxns['cr'];
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured(null, $ledger_no_dr, microtime(), 'cr', 'ippis_non_remittance_stl', null, 'ippis_non_remittance_stl', $amount, $description));
+        event(new TransactionOccured(null, $ledger_no_dr, microtime(), 'cr', 'ippis_non_remittance_stl', null, 'ippis_non_remittance_stl', $amount, $description, $value_date));
 
         return 1;
     }
@@ -880,7 +880,7 @@ class Ledger_Internal extends Model
     /**
      * Function to post NON remittance by IPPIS for savings
      */
-    public function recordIPPISNonRemittanceCOML($amount, String $description, String $centerName) : int {
+    public function recordIPPISNonRemittanceCOML($amount, String $description, String $centerName, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'ippis_non_remittance_coml')->first();
 
@@ -893,7 +893,7 @@ class Ledger_Internal extends Model
         $ledger_no_cr = $trxnType->associated_trxns['cr'];
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured(null, $ledger_no_dr, microtime(), 'cr', 'ippis_non_remittance_coml', null, 'ippis_non_remittance_coml', $amount, $description));
+        event(new TransactionOccured(null, $ledger_no_dr, microtime(), 'cr', 'ippis_non_remittance_coml', null, 'ippis_non_remittance_coml', $amount, $description, $value_date));
 
         return 1;
     }
@@ -901,7 +901,7 @@ class Ledger_Internal extends Model
     /**
      * Function to post NON remittance by IPPIS for savings
      */
-    public function recordIPPISNonRemittanceTotal($amount, String $description) : int {
+    public function recordIPPISNonRemittanceTotal($amount, String $description, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'ippis_non_remittance_total')->first();
 
@@ -912,7 +912,7 @@ class Ledger_Internal extends Model
         $ledger_no_dr = $trxnType->associated_trxns['dr'];
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured(NULL, $ledger_no_dr, microtime(), 'cr', 'ippis_non_remittance_total', null, 'ippis_non_remittance_total', $amount, $description));
+        event(new TransactionOccured(NULL, $ledger_no_dr, microtime(), 'cr', 'ippis_non_remittance_total', null, 'ippis_non_remittance_total', $amount, $description, $value_date));
 
         return 1;
     }
@@ -920,7 +920,7 @@ class Ledger_Internal extends Model
     /**
      * Function to post NON remittance by IPPIS for savings
      */
-    public function recordIPPISRemittance($amount, String $description, String $bank) : int {
+    public function recordIPPISRemittance($amount, String $description, String $bank, $value_date = NULL) : int {
 
         $trxnType = TransactionType_Ext::where('xact_type_code_ext', 'ippis_remittance')->first();
 
@@ -929,9 +929,10 @@ class Ledger_Internal extends Model
         }
 
         $ledger_no_cr = $trxnType->associated_trxns['cr'];
+        // dd($ledger_no_cr, $bank);
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured($ledger_no_cr, $bank, microtime(), 'cr', 'ippis_remittance', null, 'ippis_remittance', $amount, $description));
+        event(new TransactionOccured($ledger_no_cr, $bank, microtime(), 'cr', 'ippis_remittance', null, 'ippis_remittance', $amount, $description, $value_date));
 
         return 1;
     }

@@ -135,12 +135,14 @@ class IppisTrxnsController extends Controller
             'center_id.required'     => 'This field is required',
             'bank.required'          => 'This field is required',
             'deduction_for.required' => 'This field is required',
+            'value_date.required'    => 'This field is required',
             'amount.required'        => 'Please enter the amount',
         ];
 
         $this->validate($request, $rules, $messages);
 
         $deduction_for = Carbon::parse($request->deduction_for);
+        $value_date    = Carbon::parse($request->value_date);
         $centerID      = $request->center_id;
         $bank          = $request->bank;
         $amount        = $request->amount;
@@ -194,6 +196,7 @@ class IppisTrxnsController extends Controller
         $ippisTrxnPayment->month         = $deduction_for->format('m');
         $ippisTrxnPayment->year          = $deduction_for->format('Y');
         $ippisTrxnPayment->deduction_for = $deduction_for;
+        $ippisTrxnPayment->value_date    = $value_date;
         $ippisTrxnPayment->ms_cr         = $shareMoney['ms_amount'];
         $ippisTrxnPayment->ms_bal        = $lastPayment ? $lastPayment->ms_bal - $shareMoney['ms_amount'] : $shareMoney['ms_amount'];
         $ippisTrxnPayment->ltl_cr        = $shareMoney['ltl_amount'];
@@ -207,7 +210,7 @@ class IppisTrxnsController extends Controller
         // Trigger event to save trxn in DB as deposit
         if($amount > 0) {
             $ledgerInternal = new Ledger_Internal;
-            $ledgerInternal->recordIPPISRemittance($amount, $deduction_for->format('m').'/'.$deduction_for->format('Y').' '.$center->name.' IPPIS Remittance', $bank);
+            $ledgerInternal->recordIPPISRemittance($amount, $deduction_for->format('m').'/'.$deduction_for->format('Y').' '.$center->name.' IPPIS Remittance', $bank, $value_date);
         }
 
         return $ippisTrxnObj;
@@ -271,5 +274,81 @@ class IppisTrxnsController extends Controller
         }
 
         return $shareMoney;
+    }
+
+    /**
+     * Show form to input OAGF balances
+     */
+    public function oagfBalances() {
+        $data['centers'] = Center::all();
+
+        return view('ippistrxns.oagfBalances', $data);
+    }
+
+    public function oagfBalancesPost(Request $request) {
+        // dd($request->all());
+
+        $centers = $request->centers;
+        $amounts = $request->amounts;
+
+        $deduction_for = $request->deduction_for;
+        $oBDeduction_for = Carbon::parse($deduction_for);
+
+        $ledger = new Ledger;
+        $trxnNumber = $ledger->generateTrxnNumber();
+
+        for ($i=0; $i < count($centers); $i++) { 
+
+            $ippisTrxnObj = IppisTrxn::where('center_id', $centers[$i])
+            ->where('month', $oBDeduction_for->format('m'))
+            ->where('year', $oBDeduction_for->format('Y'))
+            ->first();
+
+            if (!$ippisTrxnObj) {
+                $ippisTrxnObj = new IppisTrxn;
+                $ippisTrxnObj->trxn_number        = $trxnNumber;
+                $ippisTrxnObj->center_id          = $centers[$i];
+                $ippisTrxnObj->month              = $oBDeduction_for->format('m');
+                $ippisTrxnObj->year               = $oBDeduction_for->format('Y');
+                $ippisTrxnObj->deduction_for      = $deduction_for;
+                $ippisTrxnObj->ms_dr              = $amounts[$i];
+                $ippisTrxnObj->ms_cr              = 0;
+                $ippisTrxnObj->ms_bal             = $amounts[$i];
+                $ippisTrxnObj->ltl_dr             = 0;
+                $ippisTrxnObj->ltl_cr             = 0;
+                $ippisTrxnObj->ltl_bal            = 0;
+                $ippisTrxnObj->stl_dr             = 0;
+                $ippisTrxnObj->stl_cr             = 0;
+                $ippisTrxnObj->stl_bal            = 0;
+                $ippisTrxnObj->coml_dr            = 0;
+                $ippisTrxnObj->coml_cr            = 0;
+                $ippisTrxnObj->coml_bal           = 0;
+                $ippisTrxnObj->done_by            = auth()->user()->ippis;
+                $ippisTrxnObj->save();
+            }
+
+            $ippisTrxnPayment        = IppisTrxnPayment::where('ippis_trxn_id', $ippisTrxnObj->id)->first();
+            if (!$ippisTrxnPayment ) {
+                $ippisTrxnPayment = new IppisTrxnPayment;
+                $ippisTrxnPayment->ippis_trxn_id = $ippisTrxnObj->id;
+                $ippisTrxnPayment->trxn_number   = $trxnNumber;
+                $ippisTrxnPayment->center_id     = $centers[$i];
+                $ippisTrxnPayment->month         = $oBDeduction_for->format('m');
+                $ippisTrxnPayment->year          = $oBDeduction_for->format('Y');
+                $ippisTrxnPayment->deduction_for = $deduction_for;
+                $ippisTrxnPayment->ms_dr         = $amounts[$i];
+                $ippisTrxnPayment->ms_bal        = $amounts[$i];
+                $ippisTrxnPayment->ltl_dr        = 0;
+                $ippisTrxnPayment->ltl_bal       = 0;
+                $ippisTrxnPayment->stl_cr        = 0;
+                $ippisTrxnPayment->stl_bal       = 0;
+                $ippisTrxnPayment->coml_dr       = 0;
+                $ippisTrxnPayment->coml_bal      = 0;
+                $ippisTrxnPayment->save();
+            }
+
+        }
+
+        return redirect()->route('ippis.trxns');
     }
 }

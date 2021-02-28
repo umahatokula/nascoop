@@ -32,7 +32,7 @@ class UserTableSeeder extends Seeder
             'name'      => 'Super Admin', 
             'username'  => '000000', 
             'ippis'     => '000000', 
-            'password'  => \Hash::make('000000'), 
+            'password'  => \Hash::make('Xo!87652HW5!6ivnE&'), 
         ]);
 
         // assign role

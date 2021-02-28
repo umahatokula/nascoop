@@ -47,6 +47,8 @@
                 </div>
                 @endif
 
+                @role('accountant')
+                
                 <div class="row">
                     <div class="col-md-12">
                         {!! Form::open(['route' => 'accountingProfitAndLoss', 'method' => 'get']) !!}
@@ -167,6 +169,8 @@
                         <!-- <profitandloss></profitandloss> -->
                     </div>
                 </div>
+
+                @endrole
 
             </div>
         </div>

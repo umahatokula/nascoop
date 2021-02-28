@@ -22,7 +22,7 @@
             <div class="col-sm-9">
               <input
                 v-model="ippisTrxn.amount"
-                type="number"
+                type="text"
                 class="form-control"
               />
               <small v-if="errors.amount" class="text-danger">{{ errors.amount[0] }}</small>
@@ -38,6 +38,18 @@
                 class="form-control"
               />
               <small v-if="errors.deduction_for" class="text-danger">{{ errors.deduction_for[0] }}</small>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="email" class="col-sm-3 col-form-label">Value Date</label>
+            <div class="col-sm-9">
+              <input
+                v-model="ippisTrxn.value_date"
+                type="date"
+                class="form-control"
+              />
+              <small v-if="errors.value_date" class="text-danger">{{ errors.value_date[0] }}</small>
             </div>
           </div>
 
@@ -83,6 +95,7 @@ export default {
       ippisTrxn: {
         ref: null,
         deduction_for: null,
+        value_date: null,
         center_id: null,
         amount: null,
         bank: null,

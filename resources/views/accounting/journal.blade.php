@@ -33,7 +33,13 @@
 
                 <div class="row mt-3">
                     <div class="col-lg-12">
+
+                        @hasanyrole('super-admin|accountant')
                         <journalentries></journalentries>
+                        @else
+                        <p>You don't have the permission to view this content</p>
+                        @endrole
+                        
                     </div>
                 </div>
 

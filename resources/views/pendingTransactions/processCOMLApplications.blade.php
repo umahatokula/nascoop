@@ -4,6 +4,7 @@
     {!! Form::hidden('trxn_number', $loan->trxn_number) !!}
     {!! Form::hidden('trxn_type', $loan->trxn_type) !!}
     {!! Form::hidden('ippis', $loan->ippis) !!}
+    {!! Form::hidden('value_date', $loan->trxn_type == 'coml' ? $loan->loan_date : $loan->deposit_date) !!}
     {!! Form::hidden('tab', 'coml') !!}
     {!! Form::hidden('amount', $loan->trxn_type == 'coml' ? $loan->dr : $loan->cr) !!}
 
@@ -18,10 +19,6 @@
     @endif
 
     <div class="row m-5">
-        <div class="col-md-4 text-center">
-            {!! Form::select('bank', $banks, null, ['class' => 'form-control selectBank mb-1', 'id' => 'name', 'placeholder' => 'Select Bank']) !!}
-            <span class="float-right"><small>Balance: <span class="bankbalance"></span></small></span>
-        </div>
         <div class="col-md-4 text-center">
             <button name="action" type="submit" value="authorize" class="btn btn-xs btn-success btn-block mb-1">Authorize</button>
         </div>

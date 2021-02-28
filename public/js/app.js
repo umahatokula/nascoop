@@ -2271,6 +2271,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -4424,6 +4427,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -4436,6 +4451,7 @@ __webpack_require__.r(__webpack_exports__);
       ippisTrxn: {
         ref: null,
         deduction_for: null,
+        value_date: null,
         center_id: null,
         amount: null,
         bank: null
@@ -5616,7 +5632,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -5914,7 +5929,8 @@ __webpack_require__.r(__webpack_exports__);
       periods: [],
       max_loan_amount: 0,
       lastLoan: 0,
-      taken_housing_loan: false
+      taken_housing_loan_36: false,
+      taken_housing_loan_72: false
     };
   },
   computed: {
@@ -5994,8 +6010,13 @@ __webpack_require__.r(__webpack_exports__);
       } // Check if member has ever taken housing loan
 
 
-      if (this.taken_housing_loan && this.loan.no_of_months == 72 || this.taken_housing_loan && this.loan.no_of_months == 36) {
-        alert('This member has already taken a Housing Loan.');
+      if (this.taken_housing_loan_72 && this.loan.no_of_months == 72) {
+        alert('This member has already taken a 72 months Housing Loan.');
+        return;
+      }
+
+      if (this.taken_housing_loan_36 && this.loan.no_of_months == 36) {
+        alert('This member has already taken a 36 months Housing Loan.');
         return;
       }
 
@@ -6044,7 +6065,8 @@ __webpack_require__.r(__webpack_exports__);
       _this2.loan.processing_fee = res.data.processingFee.amount;
       _this2.loan.adjustment = res.data.lastLoan ? res.data.lastLoan.bal : 0;
       _this2.lastLoan = res.data.lastLoan;
-      _this2.taken_housing_loan = res.data.taken_housing_loan;
+      _this2.taken_housing_loan_36 = res.data.taken_housing_loan_36;
+      _this2.taken_housing_loan_72 = res.data.taken_housing_loan_72;
       _this2.isLoading = false;
     })["catch"](function (e) {
       console.log(e);
@@ -41489,10 +41511,15 @@ var render = function() {
                       _c("td", { staticClass: "text-left" }, [
                         _vm._v(
                           _vm._s(
-                            _vm._f("moment")(
-                              entry.date_time,
-                              "Do MMMM YYYY, h:mm:ss a"
-                            )
+                            _vm._f("moment")(entry.date_time, "Do MMMM YYYY")
+                          )
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("td", { staticClass: "text-left" }, [
+                        _vm._v(
+                          _vm._s(
+                            _vm._f("moment")(entry.value_date, "Do MMMM YYYY")
                           )
                         )
                       ]),
@@ -41521,6 +41548,8 @@ var render = function() {
                       _c("td", { staticClass: "text-center" }, [_vm._v(" ")]),
                       _vm._v(" "),
                       _vm._m(2, true),
+                      _vm._v(" "),
+                      _vm._m(3, true),
                       _vm._v(" "),
                       _c("td", [
                         _vm._v(
@@ -41556,7 +41585,9 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", [
       _c("tr", [
-        _c("th", { staticClass: "text-left" }, [_vm._v("Date")]),
+        _c("th", { staticClass: "text-left" }, [_vm._v("Posting Date")]),
+        _vm._v(" "),
+        _c("th", { staticClass: "text-left" }, [_vm._v("Value Date")]),
         _vm._v(" "),
         _c("th", { staticClass: "text-left" }, [_vm._v("Description")]),
         _vm._v(" "),
@@ -41573,6 +41604,12 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("td", { staticClass: "text-right" }, [_c("br"), _vm._v(" ")])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", { staticClass: "text-left" }, [_c("br"), _vm._v(" ")])
   },
   function() {
     var _vm = this
@@ -44653,7 +44690,7 @@ var render = function() {
                       }
                     ],
                     staticClass: "form-control",
-                    attrs: { type: "number" },
+                    attrs: { type: "text" },
                     domProps: { value: _vm.ippisTrxn.amount },
                     on: {
                       input: function($event) {
@@ -44713,6 +44750,51 @@ var render = function() {
                   _vm.errors.deduction_for
                     ? _c("small", { staticClass: "text-danger" }, [
                         _vm._v(_vm._s(_vm.errors.deduction_for[0]))
+                      ])
+                    : _vm._e()
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-group row" }, [
+                _c(
+                  "label",
+                  {
+                    staticClass: "col-sm-3 col-form-label",
+                    attrs: { for: "email" }
+                  },
+                  [_vm._v("Value Date")]
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-sm-9" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.ippisTrxn.value_date,
+                        expression: "ippisTrxn.value_date"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { type: "date" },
+                    domProps: { value: _vm.ippisTrxn.value_date },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(
+                          _vm.ippisTrxn,
+                          "value_date",
+                          $event.target.value
+                        )
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _vm.errors.value_date
+                    ? _c("small", { staticClass: "text-danger" }, [
+                        _vm._v(_vm._s(_vm.errors.value_date[0]))
                       ])
                     : _vm._e()
                 ])
@@ -47077,78 +47159,61 @@ var render = function() {
                       [_vm._v("Repayment type")]
                     ),
                     _vm._v(" "),
-                    _c(
-                      "div",
-                      { staticClass: "col-sm-9" },
-                      [
-                        _c(
-                          "select",
-                          {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.repayment.repayment_mode,
-                                expression: "repayment.repayment_mode"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.$set(
-                                  _vm.repayment,
-                                  "repayment_mode",
-                                  $event.target.multiple
-                                    ? $$selectedVal
-                                    : $$selectedVal[0]
-                                )
-                              }
+                    _c("div", { staticClass: "col-sm-9" }, [
+                      _c(
+                        "select",
+                        {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.repayment.repayment_mode,
+                              expression: "repayment.repayment_mode"
                             }
-                          },
-                          _vm._l(_vm.repayment_modes, function(r, index) {
-                            return _c(
-                              "option",
-                              { key: index, domProps: { value: r.key } },
-                              [
-                                _vm._v(
-                                  "\n                " +
-                                    _vm._s(r.value) +
-                                    "\n              "
-                                )
-                              ]
-                            )
-                          }),
-                          0
-                        ),
-                        _vm._v(" "),
-                        _c("v-select", {
-                          attrs: {
-                            label: "value",
-                            options: _vm.repayment_modes
-                          },
+                          ],
+                          staticClass: "form-control",
                           on: {
-                            input: function($event) {
-                              return _vm.onSelectRepaymentType($event)
+                            change: function($event) {
+                              var $$selectedVal = Array.prototype.filter
+                                .call($event.target.options, function(o) {
+                                  return o.selected
+                                })
+                                .map(function(o) {
+                                  var val = "_value" in o ? o._value : o.value
+                                  return val
+                                })
+                              _vm.$set(
+                                _vm.repayment,
+                                "repayment_mode",
+                                $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              )
                             }
                           }
+                        },
+                        _vm._l(_vm.repayment_modes, function(r, index) {
+                          return _c(
+                            "option",
+                            { key: index, domProps: { value: r.key } },
+                            [
+                              _vm._v(
+                                "\n                " +
+                                  _vm._s(r.value) +
+                                  "\n              "
+                              )
+                            ]
+                          )
                         }),
-                        _vm._v(" "),
-                        _vm.errors.repayment_mode
-                          ? _c("small", { staticClass: "text-danger" }, [
-                              _vm._v(_vm._s(_vm.errors.repayment_mode[0]))
-                            ])
-                          : _vm._e()
-                      ],
-                      1
-                    )
+                        0
+                      ),
+                      _vm._v(" "),
+                      _vm.errors.repayment_mode
+                        ? _c("small", { staticClass: "text-danger" }, [
+                            _vm._v(_vm._s(_vm.errors.repayment_mode[0]))
+                          ])
+                        : _vm._e()
+                    ])
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "form-group row" }, [

@@ -166,14 +166,15 @@ export default {
         guarantor_2        : null
       },
     //   member            : null,
-      banks             : [],
-      errors            : [],
-      members           : [],
-      savings           : null,
-      periods           : [],
-      max_loan_amount   : 0,
-      lastLoan          : 0,
-      taken_housing_loan: false
+      banks                : [],
+      errors               : [],
+      members              : [],
+      savings              : null,
+      periods              : [],
+      max_loan_amount      : 0,
+      lastLoan             : 0,
+      taken_housing_loan_36: false,
+      taken_housing_loan_72: false
     };
   },
   computed: {
@@ -250,8 +251,12 @@ export default {
       }
 
       // Check if member has ever taken housing loan
-      if((this.taken_housing_loan && this.loan.no_of_months == 72) || (this.taken_housing_loan && this.loan.no_of_months == 36)) {
-        alert('This member has already taken a Housing Loan.')
+      if(this.taken_housing_loan_72 && this.loan.no_of_months == 72) {
+        alert('This member has already taken a 72 months Housing Loan.')
+        return;
+      }
+      if(this.taken_housing_loan_36 && this.loan.no_of_months == 36) {
+        alert('This member has already taken a 36 months Housing Loan.')
         return;
       }
 
@@ -302,15 +307,16 @@ export default {
         .then(res => {
           // console.log(res.data);  
         //   this.member              = res.data.member
-          this.members             = JSON.parse(res.data.members)
-          this.savings             = res.data.savings
-          this.periods             = res.data.periods
-          this.banks               = res.data.banks
-          this.loan.processing_fee = res.data.processingFee.amount
-          this.loan.adjustment     = res.data.lastLoan ? res.data.lastLoan.bal : 0
-          this.lastLoan            = res.data.lastLoan
-          this.taken_housing_loan  = res.data.taken_housing_loan
-          this.isLoading           = false
+          this.members               = JSON.parse(res.data.members)
+          this.savings               = res.data.savings
+          this.periods               = res.data.periods
+          this.banks                 = res.data.banks
+          this.loan.processing_fee   = res.data.processingFee.amount
+          this.loan.adjustment       = res.data.lastLoan ? res.data.lastLoan.bal : 0
+          this.lastLoan              = res.data.lastLoan
+          this.taken_housing_loan_36 = res.data.taken_housing_loan_36
+          this.taken_housing_loan_72 = res.data.taken_housing_loan_72
+          this.isLoading             = false
         })
         .catch(e => {
           console.log(e);

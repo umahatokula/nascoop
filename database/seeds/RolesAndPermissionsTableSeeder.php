@@ -59,6 +59,7 @@ class RolesAndPermissionsTableSeeder extends Seeder
         $post_3rd_party_payments = Permission::create(['name' => 'post 3rd party payments']);
         $create_chart_of_account = Permission::create(['name' => 'create chart of account']);
         $direct_coa_entry = Permission::create(['name' => 'direct coa entry']);
+        $link_accounts = Permission::create(['name' => 'link accounts']);
 
 
 
@@ -80,7 +81,7 @@ class RolesAndPermissionsTableSeeder extends Seeder
 
         $secretary->givePermissionTo([$create_member, $read_member, $update_member, $disable_member, $view_member_dashboard, $view_member_ledger, $create_centre, $read_centre, $update_centre, $delete_centre, $read_bank, $update_bank, $generate_reports]);
 
-        $treasurer->givePermissionTo([$view_member_dashboard, $view_member_ledger, $read_centre, $update_centre, $create_bank,$read_bank, $update_bank, $delete_bank, $generate_reports, $generate_IPPIS_deduction_file, $import_IPPIS_deduction_file, $post_ippis_repayment, $post_3rd_party_payments, $create_chart_of_account, $direct_coa_entry]);
+        $treasurer->givePermissionTo([$view_member_dashboard, $view_member_ledger, $read_centre, $update_centre, $create_bank,$read_bank, $update_bank, $delete_bank, $generate_reports, $generate_IPPIS_deduction_file, $import_IPPIS_deduction_file, $post_ippis_repayment, $post_3rd_party_payments, $create_chart_of_account, $direct_coa_entry, $link_accounts]);
 
         $accountant->givePermissionTo([$read_member, $update_member, $view_member_dashboard, $add_to_savings, $withdraw_from_savings, $change_monthly_contribution, $view_member_ledger, $read_centre, $ltl_create, $ltl_repay, $stl_create, $stl_repay, $com_create, $com_repay, $generate_IPPIS_deduction_file, $import_IPPIS_deduction_file, $generate_reports, $post_3rd_party_payments, $direct_coa_entry, $start_processing_pending_trxn]);
 

@@ -31,6 +31,9 @@
         <div class="card m-b-30">
             <div class="card-body">
 
+                
+                @hasanyrole('super-admin|accountant')
+                
                 <div class="row">
                     <div class="col-md-12">
                         {!! Form::open(['route' => ['accountLedger', $account->ledger_no], 'method' => 'get']) !!}
@@ -63,19 +66,20 @@
                             <table class="table table-bordered table-striped table-responsive-md">
                                 <thead>
                                     <tr>
-                                        <th colspan="4" class="text-center"><h4>General Ledger</h4></th>
+                                        <th colspan="5" class="text-center"><h4>General Ledger</h4></th>
                                     </tr>
                                     <tr>
                                         <th colspan="2">Account Name: {{ $account->account_name }}</th>
-                                        <th colspan="2">Account Code: {{ $account->ledger_no }}</th>
+                                        <th colspan="3">Account Code: {{ $account->ledger_no }}</th>
                                     </tr>
                                     <tr>
-                                        <th colspan="2">&nbsp</th>
+                                        <th colspan="3">&nbsp</th>
                                         <th class="text-right" colspan="1">Total DR: {{ number_format($total_dr, 2) }}</th>
                                         <th class="text-right" colspan="1">Total CR: {{ number_format($total_cr, 2) }}</th>
                                     </tr>
                                     <tr>
-                                        <th>Date</th>
+                                        <th>Posting Date</th>
+                                        <th>Value Date</th>
                                         <th>Description</th>
                                         <th class="text-right">DR</th>
                                         <th class="text-right">CR</th>
@@ -85,6 +89,7 @@
                                     @foreach($trxns as $trxn)
                                     <tr style="line-height: 0;">
                                         <td>{{ $trxn->created_at->toFormattedDateString() }}</td>
+                                        <td>{{ $trxn->value_date ? $trxn->value_date->toFormattedDateString() : '' }}</td>
                                         <td>{{ $trxn->description }}</td>
                                         <td class="text-right">{{ $trxn->ledger_no_dr == $account->ledger_no ? number_format($trxn->amount, 2) : '' }}</td>
                                         <td class="text-right">{{ $trxn->ledger_no == $account->ledger_no ? number_format($trxn->amount, 2) : '' }}</td>
@@ -100,6 +105,8 @@
                     <!-- <accountledger></accountledger> -->
                     </div>
                 </div>
+
+                @endrole
 
             </div>
         </div>

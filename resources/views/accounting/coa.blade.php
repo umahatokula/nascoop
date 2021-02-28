@@ -31,11 +31,17 @@
         <div class="card m-b-30">
             <div class="card-body">
 
+                @hasanyrole('super-admin|accountant')
                 <div class="row mt-3">
                     <div class="col-lg-12">
+                    
                         <coa></coa>
+                        
                     </div>
                 </div>
+                @else
+                <p>You do not have permission to view this page</p>
+                @endrole
 
             </div>
         </div>

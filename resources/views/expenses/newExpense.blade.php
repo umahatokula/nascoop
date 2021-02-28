@@ -59,7 +59,7 @@
                                 {!! Form::select('credit_account', $accounts, null, ['class' => 'form-control select2', 'id' => 'credit_account', 'placeholder' => 'Select one']) !!}
                             </div>
                         </div>
-                        <div class="form-group row"><label for="supplier_id" class="col-sm-3 col-form-label">Supplier</label>
+                        <div class="form-group row"><label for="supplier_id" class="col-sm-3 col-form-label">Payee</label>
                             <div class="col-sm-9">
                                 {!! Form::select('supplier_id', $suppliers, null, ['class' => 'form-control select2', 'id' => 'supplier_id', 'placeholder' => 'Select one']) !!}
                             </div>

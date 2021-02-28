@@ -146,8 +146,8 @@ class LedgerInternalController extends Controller
      */
     public function journal() {
 
-        $dateFrom = Carbon::today()->startOfMonth();
-        $dateTo = Carbon::today()->endOfMonth();
+        $dateFrom = Carbon::today()->startOfYear();
+        $dateTo = Carbon::today()->endOfYear();
 
         if(request()->ajax()) {
 
@@ -568,7 +568,7 @@ class LedgerInternalController extends Controller
 
 
         // fire event to save trxn in ledger transactions
-        event(new TransactionOccured($credit_account, $debit_account, microtime(), 'cr', 'manual_entry', null, null, $amount, $description));
+        event(new TransactionOccured($credit_account, $debit_account, microtime(), 'cr', 'manual_entry', null, null, $amount, $description, $entry_date));
 
         return 1;
 
@@ -582,8 +582,8 @@ class LedgerInternalController extends Controller
         // $results = DB::select( DB::raw("SELECT (SELECT SUM(amount) FROM ledger_internal_transactions WHERE ledger_no_dr LIKE '121%') AS total_debit, (SELECT SUM(amount) FROM ledger_internal_transactions WHERE ledger_no LIKE '121%') AS total_credit FROM ledger_internal_transactions"));
 
 
-        $dateFrom = Carbon::today()->startOfMonth();
-        $dateTo = Carbon::today()->endOfMonth();
+        $dateFrom = Carbon::today()->startOfYear();
+        $dateTo = Carbon::today()->endOfYear();
         
 		if (request('dateFrom')) {
             $dateFrom = Carbon::parse(request('dateFrom'));
@@ -654,8 +654,8 @@ class LedgerInternalController extends Controller
     public function accountLedger($account_code) {
         // dd(request('dateFrom'));
 
-        $dateFrom = Carbon::today()->startOfMonth();
-        $dateTo = Carbon::today()->endOfMonth();
+        $dateFrom = Carbon::today()->startOfYear();
+        $dateTo = Carbon::today()->endOfYear();
 
         $results = [];
         $account = Ledger_Internal::where('ledger_no', $account_code)->first();

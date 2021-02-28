@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\PVNumber;
+use DB;
 
 class LongTerm extends Model
 {
@@ -58,24 +59,6 @@ class LongTerm extends Model
         }
     }
     
-    /**
-     * Get total owed on long term loan
-     */
-    public function totalBalance($payPoint = null) {
-        if ($payPoint) {
-            $members = Member::where('pay_point', $payPoint)->with('long_term_payments')->get();
-        } else {
-            $members = Member::with('long_term_payments')->get();
-        }
-
-        $total = $members->reduce(function ($carry, $member) {
-            $bal = $member->long_term_payments->where('is_authorized', 1)->last() ? $member->long_term_payments->where('is_authorized', 1)->last()->bal : 0;
-            return $carry + $bal;
-        });
-
-        return $total;
-    }
-    
 
     /**
      * Generate PV number for LTL
@@ -93,5 +76,45 @@ class LongTerm extends Model
         $pv->save();
 
         return 'LTL/'.date('Y').'/'.$pvN;
+    }
+    
+    /**
+     * Get total owed on long term loan
+     */
+    public function totalBalance($payPoint = null) {
+        if ($payPoint) {
+            $members = Member::where('pay_point', $payPoint)->with('long_term_payments')->get();
+        } else {
+            $members = Member::with('long_term_payments')->get();
+        }
+
+        $total = $members->reduce(function ($carry, $member) {
+            $bal = $member->long_term_payments->where('is_authorized', 1)->last() ? $member->long_term_payments->where('is_authorized', 1)->last()->bal : 0;
+            return $carry + $bal;
+        });
+
+        return $total;
+    }
+
+    public function totalBalance1($payPoint = null) {
+        $members = [];
+
+        if ($payPoint) {
+            $members = Member::where('pay_point', $payPoint)->with('ledgers')->select('ippis')->get()->toArray();
+
+            return DB::table('long_term_payments')
+                    ->join('members', 'members.ippis', '=', 'long_term_payments.ippis')
+                    ->where('is_authorized', 1)
+                    ->whereIn('long_term_payments.ippis', $members)
+                    ->sum('bal');
+
+        } else {
+
+            return DB::table('long_term_payments')
+                    ->join('members', 'members.ippis', '=', 'long_term_payments.ippis')
+                    ->where('is_authorized', 1)
+                    ->sum('bal');
+
+        }
     }
 }

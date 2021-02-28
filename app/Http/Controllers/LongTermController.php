@@ -87,25 +87,47 @@ class LongTermController extends Controller
         $ensureMemberDetails = $member->ensureMemberDetails();
         if (!$ensureMemberDetails):            
             flash('To proceed, you must update the following details: Phone number, Email, Paypoint and Centre')->error();
-            return redirect()->route('editMember', $ippis);
+            // return redirect()->route('editMember', $ippis);
         endif;
 
         /**
          * check if member has ever taken housing loan
          */
-        $takenHousingLoan = false;
-        // $housingLoan = LongTerm::where(['ippis' => $ippis])->where(['no_of_months' => 72])->orWhere(['no_of_months' => 36])->first();
-        $housingLoan = LongTerm::where('ippis', $ippis)
-            ->where(function($query) {
-                $query->orWhere('no_of_months', 72)
-                      ->orWhere('no_of_months', 36);
-            })->first();
+        // $takenHousingLoan = false;
+        // // $housingLoan = LongTerm::where(['ippis' => $ippis])->where(['no_of_months' => 72])->orWhere(['no_of_months' => 36])->first();
+        // $housingLoan = LongTerm::where('ippis', $ippis)
+        //     ->where(function($query) {
+        //         $query->orWhere('no_of_months', 72)
+        //               ->orWhere('no_of_months', 36);
+        //     })->first();
 
-        if ($housingLoan) {
-            $housingLoanPaymentIsAuthorized = LongTermPayment::where(['long_term_id' => $housingLoan->id, 'is_authorized' => 1])->first();
+        // if ($housingLoan) {
+        //     $housingLoanPaymentIsAuthorized = LongTermPayment::where(['long_term_id' => $housingLoan->id, 'is_authorized' => 1])->first();
 
-            if ($housingLoanPaymentIsAuthorized) {
-                $takenHousingLoan = true;
+        //     if ($housingLoanPaymentIsAuthorized) {
+        //         $takenHousingLoan = true;
+        //     }
+        // }
+
+        
+        $takenHousingLoan36 = false;
+        $takenHousingLoan72 = false;
+        $housingLoan36 = LongTerm::where(['ippis' => $ippis])->where(['no_of_months' => 36])->first();
+        $housingLoan72 = LongTerm::where(['ippis' => $ippis])->where(['no_of_months' => 72])->first();
+
+        if ($housingLoan36) {
+            $housing36LoanPaymentIsAuthorized = LongTermPayment::where(['long_term_id' => $housingLoan36->id, 'is_authorized' => 1])->first();
+
+            if ($housing36LoanPaymentIsAuthorized) {
+                $takenHousingLoan36 = true;
+            }
+        }
+
+        if ($housingLoan72) {
+            $housing72LoanPaymentIsAuthorized = LongTermPayment::where(['long_term_id' => $housingLoan72->id, 'is_authorized' => 1])->first();
+
+            if ($housing72LoanPaymentIsAuthorized) {
+                $takenHousingLoan72 = true;
             }
         }
 
@@ -131,14 +153,15 @@ class LongTermController extends Controller
             $periods = LoanDuration::where('code', 'ltl')->get();
 
             return response()->json([
-                'banks'              => $banks,
-                'processingFee'      => $processingFee,
-                'savings'            => $lastSavingsPayment,
-                'periods'            => $periods,
-                'lastLoan'           => $lastLoanPayment,
-                'members'            => json_encode($members),
-                'member'             => $member,
-                'taken_housing_loan' => $takenHousingLoan,
+                'banks'                 => $banks,
+                'processingFee'         => $processingFee,
+                'savings'               => $lastSavingsPayment,
+                'periods'               => $periods,
+                'lastLoan'              => $lastLoanPayment,
+                'members'               => json_encode($members),
+                'member'                => $member,
+                'taken_housing_loan_36' => $takenHousingLoan36,
+                'taken_housing_loan_72' => $takenHousingLoan72,
             ]);
         }
 
@@ -354,7 +377,7 @@ class LongTermController extends Controller
         $ensureMemberDetails = $member->ensureMemberDetails();
         if (!$ensureMemberDetails):            
             flash('TO proceed, you must update the following details: Phone number, Email, Paypoint and Centre')->error();
-            return redirect()->route('editMember', $ippis);
+            // return redirect()->route('editMember', $ippis);
         endif;
 
         if(!isset($member)) {
@@ -508,7 +531,7 @@ class LongTermController extends Controller
 
             // fire event to save trxn in ledger transactions
             $ledgerInternal = new Ledger_Internal;
-            $ledgerInternal->recordLTLRepaymentViaSavings($member, $msPayment->dr, $member->ippis.' LTL Repay. Sav.');
+            $ledgerInternal->recordLTLRepaymentViaSavings($member, $msPayment->dr, $member->ippis.' LTL Repay. Sav.', $request->deposit_date);
 
             $activityLog = new ActivityLog;
             $activityLog->logThis($trxnNumber, $member->ippis, '(LTL Repayment from Savings) '.$request->ref, $request->total_amount, 1, auth()->user()->ippis);

@@ -208,14 +208,14 @@ class TransactionTypeExtTableSeeder extends Seeder
 
         TransactionType_Ext::insert([
             'xact_type_code_ext' => 'ippis_non_remittance_total',
-            'description' => 'IPPIS Non-remittance coml',
-            'associated_trxns' => json_encode (json_decode ('{"cr": "", "dr": "123003"}')),
+            'description' => 'IPPIS Non-remittance',
+            'associated_trxns' => json_encode (json_decode ('{"cr": "", "dr": "126003"}')),
         ]);
 
         TransactionType_Ext::insert([
             'xact_type_code_ext' => 'ippis_remittance',
             'description' => 'IPPIS Remittance',
-            'associated_trxns' => json_encode (json_decode ('{"cr": "123003", "dr": ""}')),
+            'associated_trxns' => json_encode (json_decode ('{"cr": "126003", "dr": ""}')),
         ]);
 
         // TransactionType_Ext::insert([

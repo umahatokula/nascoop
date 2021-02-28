@@ -34,6 +34,9 @@
 
                     <div class="mt-4">
                     <!-- <h5>Add New Supplier</h5> -->
+                    
+                    @role('super-admin')
+
                     {!! Form::open(['route' => 'singleLegEntryPost']) !!}
 
                         <div class="form-group row"><label for="type" class="col-sm-3 col-form-label">Type</label>
@@ -65,7 +68,9 @@
                                 <button class="btn btn-primary">Submit</button>
                             </div>
                         </div>
-                        {!! Form::close() !!}
+                    {!! Form::close() !!}
+
+                    @endrole
                     </div>
                         <!-- <newexpense></newexpense> -->
                     </div>

@@ -30,11 +30,12 @@ class SaveToLedgerTrxn
     {
         // dd($event);
         LedgerInternalTransaction::insert([
-            'ledger_no'          => $event->ledger_no_1,
-            'date_time'          => $event->date_time,
-            'ledger_no_dr'       => $event->ledger_no_2,
-            'amount'             => $event->amount,
-            'description'        => $event->description,
+            'ledger_no'    => $event->ledger_no_1,
+            'date_time'    => $event->date_time,
+            'ledger_no_dr' => $event->ledger_no_2,
+            'amount'       => $event->amount,
+            'description'  => $event->description,
+            'value_date'   => $event->value_date,
         ]);
     }
 }

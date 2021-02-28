@@ -33,8 +33,13 @@
 
                 <div class="row mt-3">
                     <div class="col-lg-12">
+                    
+                        @can('link-accounts')
+
                         @livewire('accounting.link-accounts')
                         <!-- <link-accounts></link-accounts> -->
+
+                        @endcan
                     </div>
                 </div>
 

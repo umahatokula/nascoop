@@ -245,19 +245,14 @@ Route::post('/ledger/snap-shot/post', 'LedgerSnapShotController@ledgerSnapShotPo
 Route::get('/ledger/snap-shot', 'LedgerSnapShotController@ledgerSnapShot')->name('ledgerSnapShot');
 Route::get('/download-snapshot-file/{id}/{center}', 'LedgerSnapShotController@downloadSnapshotFile')->name('downloadSnapshotFile');
 
-
-Route::get('tempLogs', 'TempActivityLogController@moveFromTempToActual');
-Route::get('generateIPPIDDeductionFile', 'IppisDeductionsExportController@generateIPPIDDeductionFile');
-Route::get('reconcileIppisImport', 'IppisDeductionsImportController@reconcileIppisImport');
-Route::get('doInitialImport', 'InitialImportController@doInitialImport');
-Route::get('accountstatement', 'AccountStatementController@generateMonthlyStatement');
-
 // Ippis Trxns
 Route::get('ippis/trxns', 'IppisTrxnsController@index')->name('ippis.trxns');
 Route::get('ippis/debit-bank', 'IppisTrxnsController@debitBank')->name('ippis.debitBank');
 Route::get('ippis/debit-bank/data', 'IppisTrxnsController@debitBankData')->name('ippis.debitBankData');
 Route::post('ippis/debit-bank/post', 'IppisTrxnsController@debitBankPost')->name('ippis.debitBankPost');
 Route::get('ippis/trxn/{trxnID}/details', 'IppisTrxnsController@trxnDetails')->name('ippis.trxnDetails');
+Route::get('ippis/trxn/oagf-balances', 'IppisTrxnsController@oagfBalances')->name('ippis.oagfBalances');
+Route::post('ippis/trxn/oagf-balances/post', 'IppisTrxnsController@oagfBalancesPost')->name('ippis.oagfBalancesPost');
 
 // Inventory
 Route::get('inventory/items', 'InventoryItemController@index')->name('inventory.index');
@@ -269,6 +264,12 @@ Route::get('inventory/items/{id}/delete', 'InventoryItemController@delete')->nam
 
 
 // ================================TEST ROUTES==============================
+Route::get('tempLogs', 'TempActivityLogController@moveFromTempToActual');
+Route::get('generateIPPIDDeductionFile', 'IppisDeductionsExportController@generateIPPIDDeductionFile');
+Route::get('reconcileIppisImport', 'IppisDeductionsImportController@reconcileIppisImport');
+Route::get('doInitialImport', 'InitialImportController@doInitialImport');
+Route::get('accountstatement', 'AccountStatementController@generateMonthlyStatement');
+
 Route::get('listAccounts', 'AccountController@listAccounts');
 Route::get('/test', function () {
 

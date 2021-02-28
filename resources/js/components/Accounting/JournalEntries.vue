@@ -12,7 +12,8 @@
         <table class="table table-bordered table-condensed table-striped table-responsive-md">
           <thead>
             <tr>
-              <th class="text-left">Date</th>
+              <th class="text-left">Posting Date</th>
+              <th class="text-left">Value Date</th>
               <th class="text-left">Description</th>
               <th>Account</th>
               <th class="text-right">Debit</th>
@@ -21,7 +22,8 @@
           </thead>
           <tbody v-for="entry in entries" :key="entry.id" style="border-top: #000 2px solid;">
             <tr style="line-height: 0;">
-              <td class="text-left">{{ entry.date_time | moment("Do MMMM YYYY, h:mm:ss a") }}</td>
+              <td class="text-left">{{ entry.date_time | moment("Do MMMM YYYY") }}</td>
+              <td class="text-left">{{ entry.value_date | moment("Do MMMM YYYY") }}</td>
               <td class="text-left"><br>{{ entry.description }}</td>
               <td>{{ entry.ledger_dr ? entry.ledger_dr.account_name : '' }}</td>
               <td class="text-right">{{ entry.amount | number_format }}</td>
@@ -29,6 +31,7 @@
             </tr>
             <tr style="line-height: 0;">
               <td class="text-center">&nbsp</td>
+              <td class="text-left"><br>&nbsp</td>
               <td class="text-left"><br>&nbsp</td>
               <td>{{ entry.ledger_cr ? entry.ledger_cr.account_name : '' }}</td>
               <td class="text-right">&nbsp</td>

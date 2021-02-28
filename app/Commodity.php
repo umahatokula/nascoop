@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class Commodity extends Model
 {
@@ -64,5 +65,29 @@ class Commodity extends Model
         // }
 
         // return $totalBalance;
+    }
+    
+    
+
+    public function totalBalance1($payPoint = null) {
+        $members = [];
+
+        if ($payPoint) {
+            $members = Member::where('pay_point', $payPoint)->with('ledgers')->select('ippis')->get()->toArray();
+
+            return DB::table('commodity_payments')
+                    ->join('members', 'members.ippis', '=', 'commodity_payments.ippis')
+                    ->where('is_authorized', 1)
+                    ->whereIn('commodity_payments.ippis', $members)
+                    ->sum('bal');
+
+        } else {
+
+            return DB::table('commodity_payments')
+                    ->join('members', 'members.ippis', '=', 'commodity_payments.ippis')
+                    ->where('is_authorized', 1)
+                    ->sum('bal');
+
+        }
     }
 }

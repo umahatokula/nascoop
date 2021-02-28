@@ -23,6 +23,7 @@ class CreateLedgerInternalTransactionsTable extends Migration
             $table->double('amount', 15, 2);
             // $table->primary(['ledger_no', 'date_time']);
             $table->string('description')->nullable();
+            $table->dateTime('value_date')->nullable();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
     }

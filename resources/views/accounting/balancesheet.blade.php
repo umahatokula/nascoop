@@ -30,7 +30,8 @@
     <div class="col-12">
         <div class="card m-b-30">
             <div class="card-body">
-
+                
+                @hasanyrole('super-admin|accountant')
                 <div class="row mb-5">
                     <div class="col-12 text-center">
                         <h2>Balance Sheet</h2>
@@ -214,6 +215,10 @@
                         <!-- <BalanceSheet></BalanceSheet> -->
                     </div>
                 </div>
+
+                @else
+                <p>You do not have the permission to view this content.</p>
+                @endrole
 
             </div>
         </div>

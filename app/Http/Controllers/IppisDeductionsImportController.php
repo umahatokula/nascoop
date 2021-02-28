@@ -77,6 +77,7 @@ class IppisDeductionsImportController extends Controller
         $query = $query->whereBetween('deduction_for', [$dateFrom, $dateTo]);
 
         $data['deductions'] = $query->get();
+        // dd($data['deductions']);
 
         $data['dateFrom'] = $dateFrom;
         $data['dateTo'] = $dateTo;
@@ -208,8 +209,8 @@ class IppisDeductionsImportController extends Controller
      */
     function reconcileIppisImport(Request $request, Ledger $ledger) {
 
-        // $tempLog = IppisDeductionsImport::where('is_done', 0)->first();
-        $tempLog = IppisDeductionsImport::latest()->first();
+        $tempLog = IppisDeductionsImport::where('is_done', 0)->first();
+        // $tempLog = IppisDeductionsImport::latest()->first();
 
         if ($tempLog) {
 
@@ -255,6 +256,7 @@ class IppisDeductionsImportController extends Controller
                         $rows[] = $import;
                     }
                 }
+
                 $remitted_savings           = 0;
                 $remitted_ltl               = 0;
                 $remitted_stl               = 0;
@@ -306,23 +308,22 @@ class IppisDeductionsImportController extends Controller
                 }
 
                 // Trigger event to save trxn in DB as deposit
-                // dd($remitted_savings, $remitted_ltl, $remitted_stl, $remitted_coml, $inIPPISFileAmount);
                 $totalAmountDeductedByIppis += ($remitted_savings + $remitted_ltl + $remitted_stl + $remitted_coml);
                 if($remitted_savings > 0) {
                     $ledgerInternal = new Ledger_Internal;
-                    $ledgerInternal->recordIPPISNonRemittanceSavings($remitted_savings, ' Savings (IPPIS Upload)', $center->name);
+                    $ledgerInternal->recordIPPISNonRemittanceSavings($remitted_savings, ' Savings (IPPIS Upload)', $center->name, $deduction_for);
                 }
                 if($remitted_ltl > 0) {
                     $ledgerInternal = new Ledger_Internal;
-                    $ledgerInternal->recordIPPISNonRemittanceLTL($remitted_ltl, ' LTL (IPPIS Upload)', $center->name);
+                    $ledgerInternal->recordIPPISNonRemittanceLTL($remitted_ltl, ' LTL (IPPIS Upload)', $center->name, $deduction_for);
                 }
                 if($remitted_stl > 0) {
                     $ledgerInternal = new Ledger_Internal;
-                    $ledgerInternal->recordIPPISNonRemittanceSTL($remitted_stl, ' STL (IPPIS Upload)', $center->name);
+                    $ledgerInternal->recordIPPISNonRemittanceSTL($remitted_stl, ' STL (IPPIS Upload)', $center->name, $deduction_for);
                 }
                 if($remitted_coml > 0) {
                     $ledgerInternal = new Ledger_Internal;
-                    $ledgerInternal->recordIPPISNonRemittanceCOML($remitted_coml, ' COML (IPPIS Upload)', $center->name);
+                    $ledgerInternal->recordIPPISNonRemittanceCOML($remitted_coml, ' COML (IPPIS Upload)', $center->name, $deduction_for);
                 }
             }
 
@@ -375,10 +376,8 @@ class IppisDeductionsImportController extends Controller
             $totalDeductionExpectedFromIPPIS = $tempLog->total_deduction;
             if($totalDeductionExpectedFromIPPIS > 0) {
                 $ledgerInternal = new Ledger_Internal;
-                $ledgerInternal->recordIPPISNonRemittanceTotal($totalDeductionExpectedFromIPPIS, $deduction_for->format('m').' '.$center->name.' IPPIS Upload');
+                $ledgerInternal->recordIPPISNonRemittanceTotal($totalDeductionExpectedFromIPPIS, $deduction_for->format('m').' '.$center->name.' IPPIS Upload', $deduction_for);
             }
-
-            // dd($deductions);
 
             $tempLog->reconciled = $deductions;
             $tempLog->done_by = $done_by;

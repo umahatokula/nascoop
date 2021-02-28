@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Ledger_Internal;
 use App\AccountType;
+use Illuminate\Support\Arr;
 
 class AccountController extends Controller
 {
@@ -21,26 +22,51 @@ class AccountController extends Controller
 
     public function listAccounts() {
 
-        $accounts = Ledger_Internal::where('usage', 'header')->get();
+        $accounts = Ledger_Internal::where('usage', 'header')->get()->toArray();
 
-        dd($this->accountsTree($accounts));
+        $tree = $this->buildTree($accounts);
+
+        $this->buildViewArray($tree);
 
     }
 
-    public function accountsTree($accounts) {
+    public function buildViewArray(array $elements) {
+        $view = array();
+        $flattened = Arr::flatten($elements);
+        dd($flattened);
 
-        $tree = [];
+        foreach ($elements as $element) {
 
-        foreach ($accounts as $account) {
-            $children = $account->getChildren();
+            $temp_element = array_merge(array(), $element);
+            $view[] = array_diff_key($temp_element, array_flip((array) ['children']));
 
-            if ($children->count() > 0) {
-                $tree[] = [$account->account_name, $children];
-                $this->accountsTree($children);
+            if(isset($element['children'])) {
+                if (count($element['children']) > 0) {
+                $this->buildViewArray($element['children']);
+            }
+            }
+
+            
+        }
+        dd($view);
+
+        return $view;
+    }
+
+    public function buildTree(array $elements, $parentId = 0) {
+        $branch = array();
+
+        foreach ($elements as $element) {
+            if ((string)$element['parent_id']  === (string)$parentId) {
+                $children = $this->buildTree($elements, $element['id']);
+                if ($children) {
+                    $element['children'] = $children;
+                }
+                $branch[] = $element;
             }
         }
 
-        return $tree;
+        return $branch;
     }
 
 }

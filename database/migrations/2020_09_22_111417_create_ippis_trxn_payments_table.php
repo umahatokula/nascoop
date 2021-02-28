@@ -22,6 +22,7 @@ class CreateIppisTrxnPaymentsTable extends Migration
             $table->integer('month')->nullable();
             $table->integer('year')->nullable();
             $table->date('deduction_for')->nullable();
+            $table->date('value_date')->nullable();
             $table->double('ms_dr', 15,2)->default(0.00);
             $table->double('ms_cr', 15,2)->default(0.00);
             $table->double('ms_bal', 15,2)->default(0.00);

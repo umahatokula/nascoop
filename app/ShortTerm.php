@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\PVNumber;
+use DB;
 
 class ShortTerm extends Model
 {
@@ -44,6 +45,25 @@ class ShortTerm extends Model
         }
     }
     
+
+    /**
+     * Generate PV number for STL
+     */
+    public function pvNumberGenerator() {
+        $pvNumber = PVNumber::where('trxn_type', 'STL')->latest('id')->first();
+
+        $pvN = $pvNumber ? $pvNumber->pv_number + 1 : 1;
+
+        // make pv number entry
+        $pv = new PVNumber;
+        $pv->pv_number = $pvN;
+        $pv->trxn_type = 'STL';
+        $pv->generated_by = auth()->user()->ippis;
+        $pv->save();
+
+        return 'STL/'.date('Y').'/'.$pvN;
+    }
+    
     
     /**
      * Get total owed on long term loan
@@ -66,21 +86,25 @@ class ShortTerm extends Model
     }
     
 
-    /**
-     * Generate PV number for STL
-     */
-    public function pvNumberGenerator() {
-        $pvNumber = PVNumber::where('trxn_type', 'STL')->latest('id')->first();
+    public function totalBalance1($payPoint = null) {
+        $members = [];
 
-        $pvN = $pvNumber ? $pvNumber->pv_number + 1 : 1;
+        if ($payPoint) {
+            $members = Member::where('pay_point', $payPoint)->with('ledgers')->select('ippis')->get()->toArray();
 
-        // make pv number entry
-        $pv = new PVNumber;
-        $pv->pv_number = $pvN;
-        $pv->trxn_type = 'STL';
-        $pv->generated_by = auth()->user()->ippis;
-        $pv->save();
+            return DB::table('short_term_payments')
+                    ->join('members', 'members.ippis', '=', 'short_term_payments.ippis')
+                    ->where('is_authorized', 1)
+                    ->whereIn('short_term_payments.ippis', $members)
+                    ->sum('bal');
 
-        return 'STL/'.date('Y').'/'.$pvN;
+        } else {
+
+            return DB::table('short_term_payments')
+                    ->join('members', 'members.ippis', '=', 'short_term_payments.ippis')
+                    ->where('is_authorized', 1)
+                    ->sum('bal');
+
+        }
     }
 }

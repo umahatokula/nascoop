@@ -143,11 +143,11 @@
                     </li>
                     @endcan
 
-                    @hasanyrole('super-admin|president|secretary')
                     <li class="has-submenu"><a href="#"><i class="dripicons-duplicate"></i> Settings <i class="mdi mdi-chevron-down mdi-drop"></i></a>
                         <ul class="submenu megamenu">
                             <li>
                                 <ul>
+                                    @role('super-admin')
                                     <li>
                                         <a href="{{ route('members.updateMemberInformation') }}">Update Members Information</a>
                                     </li>
@@ -157,6 +157,7 @@
                                     <li>
                                         <a href="{{ route('getImportInitialLedger') }}">Import Ledger</a>
                                     </li>
+                                    @endrole
                                     <li><a href="{{ route('centers.index') }}">Centers</a></li>
                                     <li><a href="{{ route('users.index') }}">Users</a></li>
                                     <li><a href="{{ route('sharesSettings') }}">Shares</a></li>
@@ -166,7 +167,6 @@
                             </li>
                         </ul>
                     </li>
-                    @endif
 
                     @hasanyrole('super-admin|secretary')
                     <li class="has-submenu"><a href="#"><i class="dripicons-duplicate"></i> Inventory Mgt <i class="mdi mdi-chevron-down mdi-drop"></i></a>
@@ -184,7 +184,7 @@
 
                     @endhasanyrole
 
-                    @hasanyrole('president|secretary')
+                    @hasanyrole('super-admin|president|secretary')
                     <li class="has-submenu">
                         <a href="{{ route('showActivityLog') }}"><i class="dripicons-suitcase"></i> Activity Log</a>
                     </li>

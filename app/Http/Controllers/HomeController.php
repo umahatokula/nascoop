@@ -53,20 +53,6 @@ class HomeController extends Controller
             return redirect()->route('members.ledger', auth()->user()->ippis);
         }
         
-        $monthlySaving = new MonthlySaving;
-        $data['totalSavings'] = $monthlySaving->totalBalance();
-
-        $longTerm = new LongTerm;
-        $data['totalLTL'] = $longTerm->totalBalance();
-
-        $shortTerm = new ShortTerm;
-        $data['totalSTL'] = $shortTerm->totalBalance();
-
-        $commodity = new Commodity;
-        $data['totalCommodity'] = $commodity->totalBalance();
-
-        $centers = Center::pluck('name', 'id');
-        
         // monthly savings
         $monthlySavings = new SavingsByCenter;
         $data['monthlySavings'] = $monthlySavings;        
@@ -87,34 +73,45 @@ class HomeController extends Controller
         $data['commodityChart'] = $commodityChart;        
         // $data['commodityChart'] = [];
         
-
+        $data['totalSavings']   = 0;
+        $data['totalLTL']       = 0;
+        $data['totalSTL']       = 0;
+        $data['totalCommodity'] = 0;
 
         // number of members by center chart
-        $membersByCenterData = Member::with('member_pay_point')->get();
-
         $membersByCenterData = Member::join('centers', 'centers.id', '=', 'members.pay_point')
                                 ->orderBy('centers.name')
                                 ->select('members.*') //see PS:
                                 ->get();
 
-        $membersByCenterData = $membersByCenterData->groupBy('pay_point')
-        ->map(function ($item, $key) {
+        $membersByCenterData = $membersByCenterData->groupBy('pay_point');
 
-            return ['numberInCenter'=> $item->count(), 'savingsTotalBalance' => (new MonthlySaving)->totalBalance($key), 'ltlTotalBalance' => (new LongTerm)->totalBalance($key), 'stlTotalBalance' => (new ShortTerm)->totalBalance($key), 'comlTotalBalance' => (new Commodity)->totalBalance($key)];
-        });
+        $centers = Center::all();
 
-        $membersByCenterData = $membersByCenterData->keyBy(function ($value, $key) use ($centers) {
-            if (isset($centers[$key])) {
-                return $centers[$key];
-            } else {
-                return 'OTHERS';
-            }
-        });
-        // dd($membersByCenterData);
+        foreach($membersByCenterData as $center_id => $item) {
 
-        $data['membersByCenterData'] = $membersByCenterData;
+            $center = $centers->first(function ($value, $key) use($center_id) {
+                return $value->id == $center_id;
+            });
 
+            $savings = (new MonthlySaving)->totalBalance($center_id);
+            $data['totalSavings'] += $savings;
 
+            $totalLTL = (new LongTerm)->totalBalance($center_id);
+            $data['totalLTL'] += $totalLTL;
+
+            $totalSTL = (new ShortTerm)->totalBalance($center_id);
+            $data['totalSTL'] += $totalSTL;
+            
+            $totalCOML = (new Commodity)->totalBalance($center_id);
+            $data['totalCommodity'] += $totalCOML;
+
+            $centerTotals[$center->name] = ['savingsTotalBalance' => $savings, 'ltlTotalBalance' => $totalLTL, 'stlTotalBalance' => $totalSTL, 'comlTotalBalance' => $totalCOML, 'numberInCenter' => count($item)];
+
+        }
+
+        $data['centerTotals'] = $centerTotals;
+        
         // SHARE
         $data['shares'] = Share::sum('units');
 
