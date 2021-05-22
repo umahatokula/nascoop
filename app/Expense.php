@@ -23,6 +23,11 @@ class Expense extends Model
         // 'is_authorized' => 'boolean',
     ];
 
+    public function doneBy()
+    {
+        return $this->belongsTo(Member::class, 'done_by', 'ippis');
+    }
+
 
     /**
      * Generata an entry code that will be used for all entries in ledger, ltl payments, stl payments and commodities payments

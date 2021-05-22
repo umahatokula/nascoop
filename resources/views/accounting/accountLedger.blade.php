@@ -38,19 +38,24 @@
                     <div class="col-md-12">
                         {!! Form::open(['route' => ['accountLedger', $account->ledger_no], 'method' => 'get']) !!}
                         <div class="row">
-                            <div class="col-md-2 text-left pt-2">
-                                Start Date
-                            </div>
-                            <div class="col-md-3">
-                                {{Form::date('dateFrom', $dateFrom, ['class' => 'form-control mb-3'])}}
-                            </div>
-                            <div class="col-md-2 text-left pt-2">
-                                End Date
-                            </div>
-                            <div class="col-md-3">
-                                {{Form::date('dateTo', $dateTo, ['class' => 'form-control mb-3'])}}
+                            <div class="col-md-2 mb-1">
+                                <p>Start Date</p>
+                                {{Form::date('dateFrom', $dateFrom, ['class' => 'form-control'])}}
                             </div>
                             <div class="col-md-2">
+                                <p>End Date</p>
+                                {{Form::date('dateTo', $dateTo, ['class' => 'form-control mb-3'])}}
+                            </div>
+                            <div class="col-md-2 mb-1">
+                                <p>Order By</p>
+                                {{Form::select('orderBy', $orderBys, $orderBy, ['class' => 'form-control'])}}
+                            </div>
+                            <div class="col-md-2 mb-1">
+                                <p>Order Direction</p>
+                                {{Form::select('orderDirection', $orderDirections, $orderDirection, ['class' => 'form-control'])}}
+                            </div>
+                            <div class="col-md-2">
+                                <p>&nbsp</p>
                                 <button type="submit" class="btn btn-primary waves-effect waves-light mb-3">Filter</button>
                                 <a href="{{ route('accountLedgerPdf', [$account->ledger_no, $dateFrom, $dateTo]) }}" type="submit" class="btn btn-danger waves-effect waves-light mb-3">PDF</a>
                             </div>

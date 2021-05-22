@@ -20,7 +20,7 @@ class CreateIppisDeductionsImportsTable extends Migration
             $table->string('deduction_for');
             $table->string('center_id')->nullable();
             $table->string('ref');
-            $table->integer('total_deduction')->nullable();
+            $table->double('total_deduction', 15,2)->nullable();
             $table->boolean('is_done')->default(0);
             $table->integer('done_by');
             $table->timestamps();

@@ -19,6 +19,12 @@
     @endif
 
     <div class="row m-5">
+        @if($loan->trxn_type == 'coml_Rp_Deposit')
+        <div class="col-md-4 text-center">
+            {!! Form::select('bank', $banks, null, ['class' => 'form-control selectBank mb-1', 'id' => 'name', 'placeholder' => 'Select Bank']) !!}
+            <span class="float-right"><small>Balance: <span class="bankbalance"></span></small></span>
+        </div>
+        @endif
         <div class="col-md-4 text-center">
             <button name="action" type="submit" value="authorize" class="btn btn-xs btn-success btn-block mb-1">Authorize</button>
         </div>

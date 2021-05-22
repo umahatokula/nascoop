@@ -242,24 +242,24 @@ class LedgerController extends Controller
                         if($type == 'dp_S') {
 
                             $ledgerInternal = new Ledger_Internal;
-                            $ledgerInternal->recordDepositToSavings($member, $mp->cr, $member->ippis.' deposit authorized', $bank, $value_date);
+                            $ledgerInternal->recordDepositToSavings($member, $mp->cr, $member->full_name.'-'.$member->ippis.' deposit authorized', $bank, $value_date);
                         }
 
                         if($type == 'wd_S') {
 
                             $ledgerInternal = new Ledger_Internal;
-                            $ledgerInternal->recordWithdrawalFromSavings($member, $mp->net_payment, $member->ippis.' Withdrawal', $bank, $value_date);
+                            $ledgerInternal->recordWithdrawalFromSavings($member, $mp->net_payment, $member->full_name.'-'.$member->ippis.' Withdrawal', $bank, $value_date);
 
                             if ($mp->processing_fee > 0) {
-                                $ledgerInternal->recordSavingsWithdrawalProcessingFee($member, $mp->processing_fee, $member->ippis.' processing fee', $bank, $value_date);
+                                $ledgerInternal->recordSavingsWithdrawalProcessingFee($member, $mp->processing_fee, $member->full_name.'-'.$member->ippis.' processing fee', $bank, $value_date);
                             }
 
                             if ($mp->interest > 0) {
-                                $ledgerInternal->recordSavingsWithdrawalInterest($member, $mp->interest, $member->ippis.' interest on w/d from savings', $bank, $value_date);
+                                $ledgerInternal->recordSavingsWithdrawalInterest($member, $mp->interest, $member->full_name.'-'.$member->ippis.' interest on w/d from savings', $bank, $value_date);
                             }
 
                             if ($mp->bank_charges > 0) {
-                                $ledgerInternal->recordSavingsWithdrawalBankTransferCharge($member, $mp->bank_charges, $member->ippis.' Bank transfer charge', $bank, $value_date);
+                                $ledgerInternal->recordSavingsWithdrawalBankTransferCharge($member, $mp->bank_charges, $member->full_name.'-'.$member->ippis.' Bank transfer charge', $bank, $value_date);
                             }
 
                         }
@@ -295,22 +295,22 @@ class LedgerController extends Controller
                             }
 
                             $ledgerInternal = new Ledger_Internal;
-                            $ledgerInternal->recordLTL($member, $lp->longTermLoan->net_payment, $member->ippis.' LTL', $bank, $value_date);
+                            $ledgerInternal->recordLTL($member, $lp->longTermLoan->net_payment, $member->full_name.'-'.$member->ippis.' LTL', $bank, $value_date);
 
                             if($lp->longTermLoan->adjustment > 0) {
-                                $ledgerInternal->recordLTLAdjustment($member, $lp->longTermLoan->adjustment, $member->ippis.' LTL Adjustment', $bank, $value_date);
+                                $ledgerInternal->recordLTLAdjustment($member, $lp->longTermLoan->adjustment, $member->full_name.'-'.$member->ippis.' LTL Adjustment', $bank, $value_date);
                             }
 
                             if ($lp->longTermLoan->processing_fee > 0) {
-                                $ledgerInternal->recordLTLProcessingFee($member, $lp->longTermLoan->processing_fee, $member->ippis.' LTL processing fee', $bank, $value_date);
+                                $ledgerInternal->recordLTLProcessingFee($member, $lp->longTermLoan->processing_fee, $member->full_name.'-'.$member->ippis.' LTL processing fee', $bank, $value_date);
                             }
 
                             if ($lp->longTermLoan->interest > 0) {
-                                $ledgerInternal->recordLTLInterest($member, $lp->longTermLoan->interest, $member->ippis.' LTL interest', $bank, $value_date);
+                                $ledgerInternal->recordLTLInterest($member, $lp->longTermLoan->interest, $member->full_name.'-'.$member->ippis.' LTL interest', $bank, $value_date);
                             }
 
                             if ($lp->longTermLoan->bank_charges > 0) {
-                                $ledgerInternal->recordLTLBankTransferCharge($member, $lp->longTermLoan->bank_charges, $member->ippis.' LTL Bank transfer charge', $bank, $value_date);
+                                $ledgerInternal->recordLTLBankTransferCharge($member, $lp->longTermLoan->bank_charges, $member->full_name.'-'.$member->ippis.' LTL Bank transfer charge', $bank, $value_date);
                             }
 
                         }
@@ -318,10 +318,16 @@ class LedgerController extends Controller
                         $ledger->long_term_bal  = $lp->bal;
                         $lp->save();
 
-                        $longTerm = LongTerm::find($lp->long_term_id);
-                        $longTerm->is_approved = 1;
-                        $longTerm->save();
-                        
+                        // Authorize
+                        $lp->is_approved = 1;
+                        $lp->save();
+
+                        if($type == 'ltl') {
+                            $parent = $lp->longTermLoan;
+                            $parent->is_approved = 1;
+                            $parent->save();
+                        }
+
                         $member->savings_locked = 0; // by setting this value to 0, trxns that affect a members savings can now be done
                         $member->save();
 
@@ -329,7 +335,7 @@ class LedgerController extends Controller
                         if($type == 'ltl_Rp_Deposit') {
 
                             $ledgerInternal = new Ledger_Internal;
-                            $ledgerInternal->recordLTLRepaymentViaDeposit($member, $ledger->long_term_cr, $member->ippis.' LTL Repay. Dep.', $bank, $value_date);
+                            $ledgerInternal->recordLTLRepaymentViaDeposit($member, $ledger->long_term_cr, $member->full_name.'-'.$member->ippis.' LTL Repay. Dep.', $bank, $value_date);
                         }
                     }
                 }
@@ -362,22 +368,22 @@ class LedgerController extends Controller
                             }
 
                             $ledgerInternal = new Ledger_Internal;
-                            $ledgerInternal->recordSTL($member, $sp->shortTermLoan->net_payment, $member->ippis.' STL Loan', $bank, $value_date);
+                            $ledgerInternal->recordSTL($member, $sp->shortTermLoan->net_payment, $member->full_name.'-'.$member->ippis.' STL Loan', $bank, $value_date);
 
                             if($sp->shortTermLoan->adjustment > 0) {
-                                $ledgerInternal->recordSTLAdjustment($member, $sp->shortTermLoan->adjustment, $member->ippis.' STL Adjustment', $bank, $value_date);
+                                $ledgerInternal->recordSTLAdjustment($member, $sp->shortTermLoan->adjustment, $member->full_name.'-'.$member->ippis.' STL Adjustment', $bank, $value_date);
                             }
 
                             if ($sp->shortTermLoan->processing_fee > 0) {
-                                $ledgerInternal->recordSTLProcessingFee($member, $sp->shortTermLoan->processing_fee, $member->ippis.' STL processing fee', $bank, $value_date);
+                                $ledgerInternal->recordSTLProcessingFee($member, $sp->shortTermLoan->processing_fee, $member->full_name.'-'.$member->ippis.' STL processing fee', $bank, $value_date);
                             }
 
                             if ($sp->shortTermLoan->interest > 0) {
-                                $ledgerInternal->recordSTLInterest($member, $sp->shortTermLoan->interest, $member->ippis.' STL interest', $bank, $value_date);
+                                $ledgerInternal->recordSTLInterest($member, $sp->shortTermLoan->interest, $member->full_name.'-'.$member->ippis.' STL interest', $bank, $value_date);
                             }
 
                             if ($sp->shortTermLoan->bank_charges > 0) {
-                                $ledgerInternal->recordSTLBankTransferCharge($member, $sp->shortTermLoan->bank_charges, $member->ippis.' STL Bank transfer charge', $bank, $value_date);
+                                $ledgerInternal->recordSTLBankTransferCharge($member, $sp->shortTermLoan->bank_charges, $member->full_name.'-'.$member->ippis.' STL Bank transfer charge', $bank, $value_date);
                             }
 
                         }
@@ -385,9 +391,15 @@ class LedgerController extends Controller
                         $ledger->short_term_bal = $sp->bal;
                         $sp->save();
 
-                        $shortTerm = ShortTerm::find($sp->short_term_id);
-                        $shortTerm->is_approved = 1;
-                        $shortTerm->save();
+                        // Authorize
+                        $sp->is_approved = 1;
+                        $sp->save();
+
+                        if($type == 'stl') {
+                            $parent = $sp->shortTermLoan;
+                            $parent->is_approved = 1;
+                            $parent->save();
+                        }
 
                         $member->savings_locked = 0; // by setting this value to 0, trxns that affect a members savings can now be done
                         $member->save();
@@ -395,7 +407,7 @@ class LedgerController extends Controller
                         if($type == 'stl_Rp_Deposit') {
 
                             $ledgerInternal = new Ledger_Internal;
-                            $ledgerInternal->recordSTLRepaymentViaDeposit($member, $ledger->short_term_cr, $member->ippis.' STL Repay. Dep.', $bank, $value_date);
+                            $ledgerInternal->recordSTLRepaymentViaDeposit($member, $ledger->short_term_cr, $member->full_name.'-'.$member->ippis.' STL Repay. Dep.', $bank, $value_date);
                         }
                     }
                 }
@@ -423,23 +435,28 @@ class LedgerController extends Controller
                         $ledger->commodity_bal  = $cp->bal;
                         $cp->save();
 
-                        $commodity = Commodity::find($cp->commodity_id);
-                        $commodity->is_approved = 1;
-                        $commodity->save();
+                        // Authorize
+                        $cp->is_approved = 1;
+                        $cp->save();
+
+                        if($type == 'coml') {
+                            $parent = $cp->commodity;
+                            $parent->is_approved = 1;
+                            $parent->save();
+                        }
                         
                         $member->savings_locked = 0; // by setting this value to 0, trxns that affect a members savings can now be done
                         $member->save();
 
                         if($type == 'coml') {
                             $ledgerInternal = new Ledger_Internal;
-                            $ledgerInternal->recordCOML($member, $cp->dr, $member->ippis.' '.$cp->commodity->ref.' COML Loan', $bank, $value_date);
+                            $ledgerInternal->recordCOML($member, $cp->dr, $member->full_name.'-'.$member->ippis.' '.$cp->commodity->ref.' COML Loan', $bank, $value_date);
                             
                         }
 
                         if($type == 'coml_Rp_Deposit') {
                             $ledgerInternal = new Ledger_Internal;
-                            $ledgerInternal->recordCOMLRepaymentViaDeposit($member, $ledger->commodity_cr, $member->ippis.' COML Repay. Dep.', $bank, $value_date);
-                            
+                            $ledgerInternal->recordCOMLRepaymentViaDeposit($member, $ledger->commodity_cr, $member->full_name.'-'.$member->ippis.' COML Repay. Dep.', $bank, $value_date);
                         }
                     }
                 }

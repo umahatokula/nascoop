@@ -315,7 +315,7 @@ class Ledger_Internal extends Model
         }
         
         $centerName = $member->member_pay_point ? $member->member_pay_point->name : '';
-        $ledger_no = $trxnType->getDetailAccountForThisTransactionType('dr', $centerName) ;
+        $ledger_no = $trxnType->getDetailAccountForThisTransactionType('dr', $centerName);
     
         $parent = $trxnType->associated_trxns['cr'];
         // $ledger_no_dr = $member->member_pay_point ? $member->member_pay_point->transacting_bank_ledger_no : $parent;
@@ -836,7 +836,7 @@ class Ledger_Internal extends Model
     }
 
     /**
-     * Function to post NON remittance by IPPIS for savings
+     * Function to post NON remittance by IPPIS for ltl
      */
     public function recordIPPISNonRemittanceLTL($amount, String $description, String $centerName, $value_date = NULL) : int {
 
@@ -857,7 +857,7 @@ class Ledger_Internal extends Model
     }
 
     /**
-     * Function to post NON remittance by IPPIS for savings
+     * Function to post NON remittance by IPPIS for stl
      */
     public function recordIPPISNonRemittanceSTL($amount, String $description, String $centerName, $value_date = NULL) : int {
 
@@ -878,7 +878,7 @@ class Ledger_Internal extends Model
     }
 
     /**
-     * Function to post NON remittance by IPPIS for savings
+     * Function to post NON remittance by IPPIS for coml
      */
     public function recordIPPISNonRemittanceCOML($amount, String $description, String $centerName, $value_date = NULL) : int {
 
@@ -899,7 +899,7 @@ class Ledger_Internal extends Model
     }
 
     /**
-     * Function to post NON remittance by IPPIS for savings
+     * Function to post TOTAL NON remittance by IPPIS
      */
     public function recordIPPISNonRemittanceTotal($amount, String $description, $value_date = NULL) : int {
 

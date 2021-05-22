@@ -148,10 +148,15 @@ class LedgerInternalController extends Controller
 
         $dateFrom = Carbon::today()->startOfYear();
         $dateTo = Carbon::today()->endOfYear();
+        
+		if (request('dateFrom')) {
+            $dateFrom = Carbon::parse(request('dateFrom'));
+            $dateTo = Carbon::parse(request('dateTo'));
+        }
 
         if(request()->ajax()) {
 
-            $entries = LedgerInternalTransaction::with('ledger_dr', 'ledger_cr')->orderBy('created_at')->whereBetween('created_at', [$dateFrom, $dateTo])->get();
+            $entries = LedgerInternalTransaction::with('ledger_dr', 'ledger_cr')->orderBy('created_at', 'desc')->whereBetween('created_at', [$dateFrom, $dateTo])->get();
 
             // $grouped = $entries->mapToGroups(function ($item, $key) {
             //     return [$item['ledger_no'] => $item];
@@ -176,7 +181,11 @@ class LedgerInternalController extends Controller
             ]);
         }
 
-        return view('accounting.journal');
+        $data['entries'] = LedgerInternalTransaction::with('ledger_dr', 'ledger_cr')->orderBy('value_date', 'desc')->whereBetween('value_date', [$dateFrom, $dateTo])->paginate(50);
+        $data['dateFrom'] = $dateFrom;
+        $data['dateTo'] = $dateTo;
+
+        return view('accounting.journal', $data);
     }
 
     /**
@@ -657,27 +666,41 @@ class LedgerInternalController extends Controller
         $dateFrom = Carbon::today()->startOfYear();
         $dateTo = Carbon::today()->endOfYear();
 
+        $orderBys = ['created_at' => 'Posting Date', 'value_date' => 'Value Date'];
+        $orderBy = 'value_date';
+
+        $orderDirections = ['asc' => 'Ascending', 'desc' => 'Descending'];
+        $orderDirection = 'desc';
+
         $results = [];
         $account = Ledger_Internal::where('ledger_no', $account_code)->first();
 
-		if (request('dateFrom')) {
+        if (request('dateFrom')) {
             $dateFrom = Carbon::parse(request('dateFrom'));
             $dateTo = Carbon::parse(request('dateTo'));
+        }
+
+        if (request('orderBy')) {
+            $orderBy = request('orderBy');
+        }
+
+		if (request('orderDirection')) {
+            $orderDirection = request('orderDirection');
         }
 
         if ($account->usage == 'header') {
             $trimmed = rtrim($account->ledger_no, 0);
 
-            $trxns = LedgerInternalTransaction::where('ledger_no', 'LIKE', $trimmed.'%')->orWhere('ledger_no_dr', 'LIKE', $trimmed.'%')->orderBy('created_at')->get();
+            $trxns = LedgerInternalTransaction::where('ledger_no', 'LIKE', $trimmed.'%')->orWhere('ledger_no_dr', 'LIKE', $trimmed.'%')->orderBy($orderBy, $orderDirection)->whereBetween('created_at', [$dateFrom, $dateTo])->get();
             // $cr = LedgerInternalTransaction::where('ledger_no', 'LIKE', $trimmed.'%')->orderBy('created_at')->get();
             // $dr = LedgerInternalTransaction::where('ledger_no_dr', 'LIKE', $trimmed.'%')->orderBy('created_at')->get();
         } else {
-            $trxns = LedgerInternalTransaction::where('ledger_no', $account->ledger_no)->orWhere('ledger_no_dr', $account->ledger_no)->orderBy('created_at')->get();
+            $trxns = LedgerInternalTransaction::where('ledger_no', $account->ledger_no)->orWhere('ledger_no_dr', $account->ledger_no)->orderBy($orderBy, $orderDirection)->whereBetween('created_at', [$dateFrom, $dateTo])->get();
             // $cr = LedgerInternalTransaction::where('ledger_no', $account->ledger_no)->orderBy('created_at')->get();
             // $dr = LedgerInternalTransaction::where('ledger_no_dr', $account->ledger_no)->orderBy('created_at')->get();
         }
 
-        $trxns = $trxns->whereBetween('created_at', [$dateFrom, $dateTo]);
+        // $trxns = $trxns->whereBetween('created_at', [$dateFrom, $dateTo]);
         $data['total_dr'] = $trxns->where('ledger_no_dr', $account->ledger_no)->sum('amount');
         $data['total_cr'] = $trxns->where('ledger_no', $account->ledger_no)->sum('amount');
         // dd($trxns->where('ledger_no_dr', $account->ledger_no)->sum('amount'));
@@ -689,6 +712,10 @@ class LedgerInternalController extends Controller
         $data['account'] = $account;
         $data['dateFrom'] = $dateFrom;
         $data['dateTo'] = $dateTo;
+        $data['orderBys'] = $orderBys; 
+        $data['orderBy'] = $orderBy; 
+        $data['orderDirections'] = $orderDirections; 
+        $data['orderDirection'] = $orderDirection; 
 
         return view('accounting.accountLedger', $data);
     }

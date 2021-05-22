@@ -73,7 +73,7 @@
                       </table>
 
                       <div class="row mt-4 ml-1">
-                        <p><b>AMOUNT: </b></p>
+                        <p><b>AMOUNT: </b>&#8358; {{ number_format($expense->amount, 2) }}</p>
                       </div>
                       <div class="row mt-2 ml-1">
                         <p><b>PREPARED BY: </b> &nbsp {{$expense->doneBy ? $expense->doneBy->full_name : ''}}</p>

@@ -117,6 +117,10 @@ class IppisDeductionsExportController extends Controller
         $pendingDeduction = IppisDeductionsExport::where('is_done', 0)->first();
         // $pendingDeduction = IppisDeductionsExport::find(1);
         // dd($pendingDeduction);
+
+        // if($pendingDeduction->isEmpty()) {
+        //     return;
+        // }
         
         if ($pendingDeduction) {
 
@@ -136,29 +140,29 @@ class IppisDeductionsExportController extends Controller
                     $ledger = new Ledger;
                     $result = $ledger->getMemberTotalMonthlyDeduction($member->ippis, $deduction_for, $done_by);
 
-                    $IppisExportData = IppisExportData::where('ippis', $member->ippis)
-                    ->where('month', $deduction_for->format('m'))
-                    ->where('year', $deduction_for->format('Y'))
-                    ->first();
+                    // $IppisExportData = IppisExportData::where('ippis', $member->ippis)
+                    // ->where('month', $deduction_for->format('m'))
+                    // ->where('year', $deduction_for->format('Y'))
+                    // ->first();
 
-                    // create if not already existing
-                    if (!$IppisExportData) {
-                        $IppisExportData = new IppisExportData;
-                    } else {                                                    
-                        $IppisExportData->ippis                     = $result['ippis'];
-                        $IppisExportData->month                     = $result['month'];
-                        $IppisExportData->year                      = $result['year'];
-                        $IppisExportData->deduction_for             = $result['deduction_for'];
-                        $IppisExportData->full_name                 = $result['full_name'];
-                        $IppisExportData->pay_point                 = $result['pay_point'];
-                        $IppisExportData->monthly_savings_amount    = $result['monthly_savings_amount'];
-                        $IppisExportData->long_term_monthly_amount  = $result['long_term_monthly_amount'];
-                        $IppisExportData->short_term_monthly_amount = $result['short_term_monthly_amount'];
-                        $IppisExportData->commodity_monthly_amount  = $result['commodity_monthly_amount'];
-                        $IppisExportData->total                     = $result['total'];
-                        $IppisExportData->done_by                   = $done_by;
-                        $IppisExportData->save();  
-                    }    
+                    // // create if not already existing
+                    // if (!$IppisExportData) {
+                    //     $IppisExportData = new IppisExportData;
+                    // } else {                                                    
+                    //     $IppisExportData->ippis                     = $result['ippis'];
+                    //     $IppisExportData->month                     = $result['month'];
+                    //     $IppisExportData->year                      = $result['year'];
+                    //     $IppisExportData->deduction_for             = $result['deduction_for'];
+                    //     $IppisExportData->full_name                 = $result['full_name'];
+                    //     $IppisExportData->pay_point                 = $result['pay_point'];
+                    //     $IppisExportData->monthly_savings_amount    = $result['monthly_savings_amount'];
+                    //     $IppisExportData->long_term_monthly_amount  = $result['long_term_monthly_amount'];
+                    //     $IppisExportData->short_term_monthly_amount = $result['short_term_monthly_amount'];
+                    //     $IppisExportData->commodity_monthly_amount  = $result['commodity_monthly_amount'];
+                    //     $IppisExportData->total                     = $result['total'];
+                    //     $IppisExportData->done_by                   = $done_by;
+                    //     $IppisExportData->save();  
+                    // }    
 
                     $deductions[] = [
                         $result['ippis'], 

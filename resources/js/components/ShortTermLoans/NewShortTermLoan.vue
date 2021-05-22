@@ -187,7 +187,8 @@ export default {
       this.loan.interest_percentage = period.interest
     },
     submitForm: function() {
-      if (this.loan.total_amount > this.max_loan_amount) {
+
+      if (parseInt(this.loan.total_amount) > parseInt(this.max_loan_amount)) {
         alert('Loan amount is more than Maximum Allowed')
         return;
       }

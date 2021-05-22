@@ -163,6 +163,7 @@
                                     <li><a href="{{ route('sharesSettings') }}">Shares</a></li>
                                     <li><a href="{{ route('loanSettings') }}">Loans Settings</a></li>
                                     <li><a href="{{ route('settings.charges') }}">Bank Settings & Charges</a></li>
+                                    <li><a href="{{ route('manual-ledger-postings.index') }}">Manual Ledger Postings</a></li>
                                 </ul>
                             </li>
                         </ul>

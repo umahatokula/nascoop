@@ -180,29 +180,78 @@ class PendingTransactionsController extends Controller
 		return view('pendingTransactions.pending', $data);
     }
 
+    /**
+     * Commence the processing of a trxn
+     */
     public function startProcessing($id, $type) {
 
+        // LTL
         if ($type == 'ltl') {
-            $item = LongTerm::find($id);
+            $item = LongTermPayment::find($id);
+            $item->start_processing = 1;
+            $item->save();
+
+            $parent = $item->longTermLoan;
+            $parent->start_processing = 1;
+            $parent->save();
+            
+            return redirect()->back();
+        }
+
+        if ($type == 'ltl_Rp_Deposit') {
+            $item = LongTermPayment::find($id);
             $item->start_processing = 1;
             $item->save();
             
             return redirect()->back();
         }
+
+
+        // STL
         if ($type == 'stl') {
-            $item = ShortTerm::find($id);
+            $item = ShortTermPayment::find($id);
+            $item->start_processing = 1;
+            $item->save();
+
+            $parent = $item->shortTermLoan;
+            $parent->start_processing = 1;
+            $parent->save();
+            
+            return redirect()->back();
+        }
+
+        if ($type == 'stl_Rp_Deposit') {
+            $item = ShortTermPayment::find($id);
             $item->start_processing = 1;
             $item->save();
             
             return redirect()->back();
         }
+
+
+        // COML
         if ($type == 'coml') {
-            $item = Commodity::find($id);
+            $item = CommodityPayment::find($id);
+            $item->start_processing = 1;
+            $item->save();
+
+            $parent = $item->commodity;
+            $parent->start_processing = 1;
+            $parent->save();
+            
+            return redirect()->back();
+        }
+
+        if ($type == 'coml_Rp_Deposit') {
+            $item = CommodityPayment::find($id);
             $item->start_processing = 1;
             $item->save();
             
             return redirect()->back();
         }
+
+
+        // SAVINGS
         if ($type == 'savings') {
             $item = MonthlySavingsPayment::find($id);
             $item->start_processing = 1;
@@ -210,6 +259,9 @@ class PendingTransactionsController extends Controller
 
             return redirect()->back();
         }
+
+
+        // SHARES
         if ($type == 'shares') {
             $item = Share::find($id);
             $item->start_processing = 1;
@@ -220,6 +272,10 @@ class PendingTransactionsController extends Controller
 
     }
     
+
+    /**
+     * Authorize or decline a trxn
+     */
     public function processApplications($id, $type) {
 
 		$data['centers'] = Center::pluck('name', 'id');

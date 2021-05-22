@@ -262,6 +262,11 @@ Route::get('inventory/items/{id}/store', 'InventoryItemController@edit')->name('
 Route::put('inventory/items/{id}/update', 'InventoryItemController@update')->name('inventory.update');
 Route::get('inventory/items/{id}/delete', 'InventoryItemController@delete')->name('inventory.delete');
 
+// Manual Ledger Posting
+Route::get('manual-ledger-postings/{id}/approve', 'ManualLedgerPostingsController@approve')->name('manual-ledger-postings.approve');
+Route::get('manual-ledger-postings/{id}/disapprove', 'ManualLedgerPostingsController@disapprove')->name('manual-ledger-postings.disapprove');
+Route::resource('manual-ledger-postings', 'ManualLedgerPostingsController');
+
 
 // ================================TEST ROUTES==============================
 Route::get('tempLogs', 'TempActivityLogController@moveFromTempToActual');
@@ -274,7 +279,19 @@ Route::get('listAccounts', 'AccountController@listAccounts');
 Route::get('/test', function () {
 
     $ledger = new App\Ledger;
-    $member = App\Member::where('ippis', 355925)->first();
+    $member = App\Member::where('ippis', 16216)->first();
+    $monthly_savings = $member->latest_monthly_saving();
+    dd($monthly_savings);
+
+
+
+
+
+
+
+
+
+
     $expected = $ledger->getMemberExpectedMonthlyDeduction($member->ippis, '2020-08-30', 17679);
     $remitted = $ledger->getMemberRemittedMonthlyDeduction($member->ippis, '2020-08-30', 17679);
     $reconciled = $ledger->executeReconciliation($member->ippis, $remitted, $expected, 'trial', '2020-08-30', 17679);

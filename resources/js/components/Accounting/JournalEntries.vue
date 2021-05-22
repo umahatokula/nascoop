@@ -26,7 +26,7 @@
               <td class="text-left">{{ entry.value_date | moment("Do MMMM YYYY") }}</td>
               <td class="text-left"><br>{{ entry.description }}</td>
               <td>{{ entry.ledger_dr ? entry.ledger_dr.account_name : '' }}</td>
-              <td class="text-right">{{ entry.amount | number_format }}</td>
+              <td class="text-right">{{ entry.ledger_no_dr ? entry.amount : null | number_format }}</td>
               <td class="text-right"><br>&nbsp</td>
             </tr>
             <tr style="line-height: 0;">
@@ -35,7 +35,7 @@
               <td class="text-left"><br>&nbsp</td>
               <td>{{ entry.ledger_cr ? entry.ledger_cr.account_name : '' }}</td>
               <td class="text-right">&nbsp</td>
-              <td class="text-right"><br>{{ entry.amount | number_format }}</td>
+              <td class="text-right"><br>{{ entry.ledger_no ? entry.amount : null | number_format }}</td>
             </tr>
           </tbody>
         </table>

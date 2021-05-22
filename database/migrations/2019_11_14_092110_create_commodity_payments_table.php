@@ -32,6 +32,8 @@ class CreateCommodityPaymentsTable extends Migration
             $table->string('year');
             $table->integer('applied_by')->nullable();
             $table->integer('done_by')->nullable();
+            $table->boolean('start_processing')->default(0)->nullable();
+            $table->boolean('is_approved')->default(0)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

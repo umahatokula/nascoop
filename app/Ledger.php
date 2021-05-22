@@ -113,6 +113,8 @@ class Ledger extends Model
 
         $member = Member::where('ippis', $ippis)->first();
         $oBDeduction_for = Carbon::parse($deduction_for);
+        $deductionMatureDays = $oBDeduction_for->subDays(NUMBER_OF_DAYS_TO_START_REPAYING_LOAN);
+        $oBDeduction_for = $oBDeduction_for->addDays(NUMBER_OF_DAYS_TO_START_REPAYING_LOAN); //restore the original date before the subtraction above
 
         if($member) {
 
@@ -143,7 +145,15 @@ class Ledger extends Model
             // If loan date month is same as deduction month, dont apply repayment
             $ltl_loan_date = $member->latest_long_term_loan() ? $member->latest_long_term_loan()->loan_date : false;
             // $isDueForRepaymentLTL = $ltl_loan_date ? (!$ltl_loan_date->isSameMonth($oBDeduction_for)) : false;
-            $isDueForRepaymentLTL = $ltl_loan_date ? ($ltl_loan_date->lessThan(Carbon::today()->subDays(NUMBER_OF_DAYS_TO_START_REPAYING_LOAN))) : false;
+            // $isDueForRepaymentLTL = $ltl_loan_date ? ($ltl_loan_date->lessThan($deductionMatureDays)) : false;
+
+            if($ltl_loan_date) {
+                $lenght = $ltl_loan_date->diffInDays($oBDeduction_for);
+                $isDueForRepaymentLTL = $lenght > NUMBER_OF_DAYS_TO_START_REPAYING_LOAN && $oBDeduction_for->greaterThan($ltl_loan_date) ? true : false;
+            } else {
+                $isDueForRepaymentLTL = false;
+            }
+
             if ($isDueForRepaymentLTL):
                 if (!$long_term) { // no ltl
                     $long_term_monthly_amount = 0;
@@ -175,8 +185,17 @@ class Ledger extends Model
 
             // If loan date month is same as deduction month, dont apply repayment
             $stl_loan_date = $member->latest_short_term_loan() ? $member->latest_short_term_loan()->loan_date : false;
+
             // $isDueForRepaymentSTL = $stl_loan_date ? (!$stl_loan_date->isSameMonth($oBDeduction_for)) : false;
-            $isDueForRepaymentSTL = $stl_loan_date ? ($stl_loan_date->lessThan(Carbon::today()->subDays(NUMBER_OF_DAYS_TO_START_REPAYING_LOAN))) : false;
+            // $isDueForRepaymentSTL = $stl_loan_date ? ($stl_loan_date->lessThan($deductionMatureDays)) : false;
+
+            if($stl_loan_date) {
+                $lenght = $stl_loan_date->diffInDays($oBDeduction_for);
+                $isDueForRepaymentSTL = $lenght > NUMBER_OF_DAYS_TO_START_REPAYING_LOAN && $oBDeduction_for->greaterThan($stl_loan_date) ? true : false;
+            } else {
+                $isDueForRepaymentSTL = false;
+            }
+
             if ($isDueForRepaymentSTL):
                 if (!$short_term) { // no stl
                     $short_term_monthly_amount = 0;
@@ -209,7 +228,15 @@ class Ledger extends Model
             // If loan date month is same as deduction month, dont apply default
             $coml_loan_date = $member->latest_commodity_loan() ? $member->latest_commodity_loan()->loan_date : false;
             // $isDueToPenalizeCOMM = $coml_loan_date ? (!$coml_loan_date->isSameMonth($oBDeduction_for)) : false;
-            $isDueToPenalizeCOMM = $coml_loan_date ? ($coml_loan_date->lessThan(Carbon::today()->subDays(NUMBER_OF_DAYS_TO_START_REPAYING_LOAN))) : false;
+            // $isDueToPenalizeCOMM = $coml_loan_date ? ($coml_loan_date->lessThan($deductionMatureDays)) : false;
+
+            if($coml_loan_date) {
+                $lenght = $coml_loan_date->diffInDays($oBDeduction_for);
+                $isDueToPenalizeCOMM = $lenght > NUMBER_OF_DAYS_TO_START_REPAYING_LOAN && $oBDeduction_for->greaterThan($coml_loan_date) ? true : false;
+            } else {
+                $isDueToPenalizeCOMM = false;
+            }
+
             if ($isDueToPenalizeCOMM):
                 if (!$commodity) { // no stl
                     $commodity_monthly_amount = 0;

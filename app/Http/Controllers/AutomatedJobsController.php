@@ -11,6 +11,10 @@ class AutomatedJobsController extends Controller
     public function revertMonthlySavings() {
         $toBeReverted = MonthlySaving::where(['is_indefinite' => 0, 'revert_date' => Carbon::today()])->get();
 
+        if($toBeReverted->isEmpty()) {
+            return;
+        }
+
         foreach ($toBeReverted as $s) {
             
             $monthlySaving                  = new MonthlySaving;

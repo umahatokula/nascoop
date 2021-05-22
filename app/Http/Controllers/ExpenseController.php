@@ -46,7 +46,7 @@ class ExpenseController extends Controller
         $data['dateTo'] = $dateTo;
         // dd($dateFrom, $dateTo, $expensesQuery->paginate(20));
 
-        $data['expenses'] = $expensesQuery->paginate(20);
+        $data['expenses'] = $expensesQuery->orderBy('created_at', 'desc')->paginate(20);
 
         return view('expenses.index', $data);
     }

@@ -143,6 +143,7 @@ export default {
       last_long_term_payment: 0,
       last_monthly_saving: 0,
       interest_percentage_charge: 0,
+      period: null,
     };
   },
   computed: {
@@ -243,11 +244,14 @@ export default {
 
           // this.max_deductable_savings_amount = this.last_monthly_saving.bal;
 
-          if(this.last_long_term_payment.long_term_loan.no_of_months == 36) {
-            this.max_deductable_savings_amount = this.last_monthly_saving.bal - this.last_long_term_payment.bal / 3;
-          } else {
-            this.max_deductable_savings_amount = this.last_monthly_saving.bal - this.last_long_term_payment.bal / 2;
-          }
+          // if(this.last_long_term_payment.long_term_loan.no_of_months == 36) {
+          //   this.max_deductable_savings_amount = this.last_monthly_saving.bal - this.last_long_term_payment.bal / 3;
+          // } else {
+          //   this.max_deductable_savings_amount = this.last_monthly_saving.bal - this.last_long_term_payment.bal / 2;
+          // }
+
+          this.period = res.data.period
+          this.max_deductable_savings_amount = this.last_monthly_saving.bal - this.last_long_term_payment.bal / this.period.determinant_factor;
           
         }
       })

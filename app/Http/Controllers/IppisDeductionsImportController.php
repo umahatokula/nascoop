@@ -47,12 +47,6 @@ class IppisDeductionsImportController extends Controller
      */
     function importFromIppis() {
 
-        // Ensure there are no pending trxns        
-        if(Ledger::areTherePendingTransaction()) {
-            flash('Please process all pending transactions first')->error();
-            return redirect()->route('pendingTransactions');
-        }
-
         $data['centers'] = Center::pluck('name', 'id');
         // $center_id = request('center_id') ? : 9;
 
@@ -93,6 +87,12 @@ class IppisDeductionsImportController extends Controller
     function importFromIppisPost(Request $request) {
         // dd($request->all());
 
+        // Ensure there are no pending trxns        
+        if(Ledger::areTherePendingTransaction()) {
+            flash('Please process all pending transactions first')->error();
+            return redirect()->route('pendingTransactions');
+        }
+
         $rules = [
             'file' => 'required',
             'deduction_for' => 'required',
@@ -132,8 +132,8 @@ class IppisDeductionsImportController extends Controller
 
             if (count($row) == 4) { // ensure the data is in the format S/N, IPPIS, NAME, AMOUNT
                 // ensure IPPIS and Amount fields are numeric. This is like a check for valid data
-                $ippis  = $row[1];
-                $amount = $row[3];
+                $ippis  = intval($row[1]);
+                $amount = doubleval($row[3]);
                 if (is_numeric($ippis) && is_numeric($amount)) {
                     $data[] = [$row[0], $row[1], $row[2], $row[3]];
                     $totalDeduction += $amount;
@@ -211,6 +211,11 @@ class IppisDeductionsImportController extends Controller
 
         $tempLog = IppisDeductionsImport::where('is_done', 0)->first();
         // $tempLog = IppisDeductionsImport::latest()->first();
+        // dd(is_null($tempLog));
+
+        if(is_null($tempLog)) {
+            return;
+        }
 
         if ($tempLog) {
 
@@ -348,7 +353,7 @@ class IppisDeductionsImportController extends Controller
                         // 'is_successful'             => 0,
                 ];
                 $index = \array_search($ippis, $importedIPPIS['ippis']);
-                $inIPPISFileAmount += $importedIPPIS['amount'][$index];
+                $inIPPISFileAmount += doubleval($importedIPPIS['amount'][$index]);
             }
 
             foreach($inDB as $ippis) {
@@ -376,7 +381,7 @@ class IppisDeductionsImportController extends Controller
             $totalDeductionExpectedFromIPPIS = $tempLog->total_deduction;
             if($totalDeductionExpectedFromIPPIS > 0) {
                 $ledgerInternal = new Ledger_Internal;
-                $ledgerInternal->recordIPPISNonRemittanceTotal($totalDeductionExpectedFromIPPIS, $deduction_for->format('m').' '.$center->name.' IPPIS Upload', $deduction_for);
+                $ledgerInternal->recordIPPISNonRemittanceTotal($totalDeductionExpectedFromIPPIS, 'TOTAL EXPECTED FROM IPPPIS ('.$tempLog->ref.'-'.$deduction_for->format('m').'/'.$deduction_for->format('Y').')', $deduction_for);
             }
 
             $tempLog->reconciled = $deductions;

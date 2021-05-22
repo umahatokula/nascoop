@@ -19,7 +19,7 @@
         <tr>
             <td>{{ $deduction['name'] }}</td>
             <td>{{ $deduction['ippis'] }}</td>
-            <td>{{ $deduction['expected_ltl'] }}</td>
+            <td>{{ $deduction['expected_savings'] }}</td>
             <td>{{ $deduction['remitted_savings'] }}</td>
             <td>{{ $deduction['expected_ltl'] }}</td>
             <td>{{ $deduction['remitted_ltl'] }}</td>

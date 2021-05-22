@@ -56,8 +56,7 @@ endif;
                 <div class="row">
                     <div class="col-12 text-right my-1">
                         <span class="badge badge-primary">ATC</span> = Awaiting Transaction Commencement 
-                    </div>
-                    <div class="col-12 text-right mt-1 mb-3">
+                        |
                         <span class="badge badge-success">ATA</span> = Awaiting Transaction Authorization 
                     </div>
                     <div class="col-md-2">
@@ -141,9 +140,9 @@ endif;
                                             </td>
                                             <td class="text-center">
 
-                                            @if(!$pendingLongTermTnx->longTermLoan->start_processing && !$pendingLongTermTnx->longTermLoan->is_approved)
+                                            @if(!$pendingLongTermTnx->start_processing && !$pendingLongTermTnx->is_approved)
                                                 @if(auth()->user()->can('start processing pending trxn'))
-                                                <a href="{{route('pendingTransactions.startProcessing', [$pendingLongTermTnx->longTermLoan->id, 'ltl'])}}" class="" onclick = "return confirm('Are you sure?')">Start Processing</a> | 
+                                                <a href="{{route('pendingTransactions.startProcessing', [$pendingLongTermTnx->id, 'ltl'])}}" class="" onclick = "return confirm('Are you sure?')">Start Processing</a> | 
                                                 <a class="text-success" href="{{ route('members.longTermLoansPaymentVoucher', $pendingLongTermTnx->longTermLoan->id) }}" target="_blank">PV</a> |
 
                                                 <a data-toggle="modal" data-keyboard="false" data-target="#myModal"
@@ -154,7 +153,7 @@ endif;
                                                 @endif
                                             @endif
 
-                                            @if($pendingLongTermTnx->longTermLoan->start_processing && !$pendingLongTermTnx->longTermLoan->is_approved)
+                                            @if($pendingLongTermTnx->start_processing && !$pendingLongTermTnx->is_approved)
                                                 @if(auth()->user()->can('authorize pending trxn'))
                                                 <a data-toggle="modal" data-keyboard="false" data-target="#myModal"
                                                     data-remote="{{route('pendingTransactions.processApplications', [$pendingLongTermTnx->id, 'ltl'])}}"
@@ -210,9 +209,9 @@ endif;
                                             </td>
                                             <td class="text-center">
 
-                                            @if(!$pendingShortTermTnx->shortTermLoan->start_processing && !$pendingShortTermTnx->shortTermLoan->is_approved)
+                                            @if(!$pendingShortTermTnx->start_processing && !$pendingShortTermTnx->is_approved)
                                                 @if(auth()->user()->can('start processing pending trxn'))
-                                                <a href="{{route('pendingTransactions.startProcessing', [$pendingShortTermTnx->shortTermLoan->id, 'stl'])}}" class="" onclick = "return confirm('Are you sure?')">Start Processing</a> | 
+                                                <a href="{{route('pendingTransactions.startProcessing', [$pendingShortTermTnx->id, 'stl'])}}" class="" onclick = "return confirm('Are you sure?')">Start Processing</a> | 
                                                 <a class="text-success" href="{{ route('members.shortTermLoansPaymentVoucher', $pendingShortTermTnx->shortTermLoan->id) }}" target="_blank">PV</a>
                                                 @else
                                                     <p><span class="badge badge-primary">ATC</span></p>
@@ -275,9 +274,9 @@ endif;
                                             </td>
                                             <td class="text-center">
 
-                                            @if(!$pendingCommodityTnx->commodity->start_processing && !$pendingCommodityTnx->commodity->is_approved)
+                                            @if(!$pendingCommodityTnx->start_processing && !$pendingCommodityTnx->is_approved)
                                                 @if(auth()->user()->can('start processing pending trxn'))
-                                                <a href="{{route('pendingTransactions.startProcessing', [$pendingCommodityTnx->commodity->id, 'coml'])}}" class="" onclick = "return confirm('Are you sure?')">Start Processing</a>
+                                                <a href="{{route('pendingTransactions.startProcessing', [$pendingCommodityTnx->id, 'coml'])}}" class="" onclick = "return confirm('Are you sure?')">Start Processing</a>
                                                 @else
                                                     <p><span class="badge badge-primary">ATC</span></p>
                                                 @endif

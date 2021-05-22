@@ -333,4 +333,13 @@ class Member extends Model
 
         return $banks;
     }
+
+    /**
+     * Check if all manual ledger enttries of a member have been processed or not
+     */
+    public function hasPendingTransaction() {
+
+        return ManualLedgerPosting::where(['is_authorized' =>  0, 'ippis' => $this->ippis])->count() > 0 ? true : false;
+
+    }
 }

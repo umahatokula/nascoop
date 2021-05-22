@@ -6231,7 +6231,8 @@ __webpack_require__.r(__webpack_exports__);
       max_deductable_savings_amount: 0,
       last_long_term_payment: 0,
       last_monthly_saving: 0,
-      interest_percentage_charge: 0
+      interest_percentage_charge: 0,
+      period: null
     };
   },
   computed: {
@@ -6316,11 +6317,13 @@ __webpack_require__.r(__webpack_exports__);
         _this2.max_deductable_savings_amount = _this2.last_monthly_saving.bal;
       } else {
         // this.max_deductable_savings_amount = this.last_monthly_saving.bal;
-        if (_this2.last_long_term_payment.long_term_loan.no_of_months == 36) {
-          _this2.max_deductable_savings_amount = _this2.last_monthly_saving.bal - _this2.last_long_term_payment.bal / 3;
-        } else {
-          _this2.max_deductable_savings_amount = _this2.last_monthly_saving.bal - _this2.last_long_term_payment.bal / 2;
-        }
+        // if(this.last_long_term_payment.long_term_loan.no_of_months == 36) {
+        //   this.max_deductable_savings_amount = this.last_monthly_saving.bal - this.last_long_term_payment.bal / 3;
+        // } else {
+        //   this.max_deductable_savings_amount = this.last_monthly_saving.bal - this.last_long_term_payment.bal / 2;
+        // }
+        _this2.period = res.data.period;
+        _this2.max_deductable_savings_amount = _this2.last_monthly_saving.bal - _this2.last_long_term_payment.bal / _this2.period.determinant_factor;
       }
     })["catch"](function (e) {
       console.log(e);
@@ -7097,7 +7100,7 @@ __webpack_require__.r(__webpack_exports__);
     submitForm: function submitForm() {
       var _this = this;
 
-      if (this.loan.total_amount > this.max_loan_amount) {
+      if (parseInt(this.loan.total_amount) > parseInt(this.max_loan_amount)) {
         alert('Loan amount is more than Maximum Allowed');
         return;
       }
@@ -41538,7 +41541,13 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("td", { staticClass: "text-right" }, [
-                        _vm._v(_vm._s(_vm._f("number_format")(entry.amount)))
+                        _vm._v(
+                          _vm._s(
+                            _vm._f("number_format")(
+                              entry.ledger_no_dr ? entry.amount : null
+                            )
+                          )
+                        )
                       ]),
                       _vm._v(" "),
                       _vm._m(1, true)
@@ -41563,7 +41572,13 @@ var render = function() {
                       _vm._v(" "),
                       _c("td", { staticClass: "text-right" }, [
                         _c("br"),
-                        _vm._v(_vm._s(_vm._f("number_format")(entry.amount)))
+                        _vm._v(
+                          _vm._s(
+                            _vm._f("number_format")(
+                              entry.ledger_no ? entry.amount : null
+                            )
+                          )
+                        )
                       ])
                     ])
                   ]

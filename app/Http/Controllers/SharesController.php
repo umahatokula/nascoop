@@ -106,7 +106,7 @@ class SharesController extends Controller
         $ensureMemberDetails = $member->ensureMemberDetails();
         if (!$ensureMemberDetails):            
             flash('To proceed, you must update the following details: Phone number, Email, Paypoint and Centre')->error();
-            return redirect()->route('editMember', $ippis);
+            // return redirect()->route('editMember', $ippis);
         endif;
         
         if (!$settings) {

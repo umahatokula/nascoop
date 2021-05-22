@@ -50,8 +50,8 @@
     </footer>
 
     <script src="{{ asset('js/app.js') }}"></script>
-    <script src="{{ asset('js/jquery-3.3.0.js') }}"></script>
-    <!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script> -->
+    <!-- <script src="{{ asset('js/jquery-3.3.0.js') }}"></script> -->
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/js/modernizr.min.js') }}"></script>
     <script src="{{ asset('handsontable/handsontable.full.min.js') }}"></script>

@@ -14,6 +14,7 @@ use App\ActivityLog;
 use App\Helpers\CurrencyInWords;
 use App\ProcessingFee;
 use App\PVNumber;
+use App\LoanDuration;
 use Toastr;
 
 use Illuminate\Http\Request;
@@ -216,6 +217,20 @@ class MonthlySavingController extends Controller
         $banks = Bank::all();
         $processingFee = ProcessingFee::first();
 
+        if ($member->latest_long_term_loan()) {
+            $no_of_months = $member->latest_long_term_loan()->no_of_months;
+
+            if ($no_of_months != 0) {
+                $period = LoanDuration::where(['code' => 'ltl', 'number_of_months' => $no_of_months])->first();
+            } else {
+                $period = null;
+            }
+            
+        } else {
+            $period = null;
+        }
+        // dd($period);
+
         if (request()->ajax()) {
             return [
                 'member'                    => $member, 
@@ -224,6 +239,7 @@ class MonthlySavingController extends Controller
                 'interest_percentage'       => 2.5,
                 'banks'                     => $banks, 
                 'processingFee'             => $processingFee,
+                'period'                    => $period,
             ];
         }
 

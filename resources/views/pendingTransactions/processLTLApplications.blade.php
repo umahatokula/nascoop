@@ -40,7 +40,7 @@
                             <strong>Name</strong>
                         </th>
                         <th class="">
-                            <strong>{{ $loan->member->full_name }} (<a href="{{ route('members.longTermLoansPaymentVoucher', $loan->id) }}" target="_blank">View PV</a>)</strong>
+                            <strong>{{ $loan->member->full_name }} (<a href="{{ route('members.longTermLoansPaymentVoucher', $loan->longTermLoan->id) }}" target="_blank">View PV</a>)</strong>
                         </th>
                     </tr>
                 </thead>

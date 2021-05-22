@@ -113,9 +113,9 @@
                             <td class="text-left">{{ $deduction->ref }}</td>
                             <td class="text-center">{{ Carbon\Carbon::parse($deduction->deduction_for)->format('F, Y') }}</td>
                             <td class="text-left">{{ $deduction->performed_by ? $deduction->performed_by->full_name : '' }}</td>
-                            <td class="text-center"><span class="badge {{ $deduction->is_done == 1 ? 'badge-success' : 'badge-secondary' }}">{{ $deduction->is_done ? 'Yes' : 'No' }}</span></td>
+                            <td class="text-center"><span class="badge {{ $deduction->reconciled ? 'badge-success' : 'badge-secondary' }}">{{ $deduction->reconciled ? 'Yes' : 'No' }}</span></td>
                             <td class="text-center">
-                                <a href="{{ route('downloadDeductionsFile', [$deduction->id, Carbon\Carbon::parse($deduction->deduction_for)->format('F'), Carbon\Carbon::parse($deduction->deduction_for)->format('Y')]) }}" class="btn btn-sm {{ $deduction->is_done == 1 ? 'btn-success' : 'btn-secondary disabled' }}">Download</a>
+                                <a href="{{ route('downloadDeductionsFile', [$deduction->id, Carbon\Carbon::parse($deduction->deduction_for)->format('F'), Carbon\Carbon::parse($deduction->deduction_for)->format('Y')]) }}" class="btn btn-sm {{ $deduction->reconciled ? 'btn-success' : 'btn-secondary disabled' }}">Download</a>
                             </td>
                             </tr>
                             @endforeach
