@@ -69,7 +69,8 @@
                                     </tr>
                                 </thead>
                                 @foreach($shortTermLoans as $shortTermLoan)
-                                    <tr>
+                                    <tr class="{{ $shortTermLoan->is_approved == 2 ? 'text-muted' : '' }}"
+                                            style="{{ $shortTermLoan->is_approved == 2 ? 'text-decoration: line-through;' : '' }}">
                                         <td class="text-left">{{ $shortTermLoan->loan_date ? $shortTermLoan->loan_date->toFormattedDateString() : '' }}</td>
                                         <td class="text-right">{{ number_format($shortTermLoan->total_amount, 2) }}</td>
                                         <td class="text-center">

@@ -186,7 +186,7 @@ export default {
           this.last_payment                  = res.data.last_long_term_payment
           this.savings_bal                   = res.data.savings_bal
           this.last_long_term_loan_payment   = res.data.last_long_term_loan_payment
-          this.max_deductable_savings_amount = this.savings_bal - (this.last_payment.bal / 2)
+          this.max_deductable_savings_amount = res.data.max_deductable_savings_amount
         
           this.isLoading = false
         })

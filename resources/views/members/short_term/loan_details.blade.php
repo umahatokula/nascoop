@@ -5,7 +5,7 @@
         </tr>
         <tr>
             <th class="text-center" colspan="2">
-                <a href="{{ route('members.shortTermLoansPaymentVoucher', $loan->id) }}">Payment Voucher</a>
+                <a href="{{ route('members.shortTermLoansPaymentVoucher', $loan->id) }}">Payment Voucher <span class="{{ $loan->is_approved == 0 ? 'text-muted' : ($loan->is_approved == 1 ? 'text-success' : 'text-danger') }}">({{ $loan->is_approved == 0 ? 'Unprocessed' : ($loan->is_approved == 1 ? 'Approved' : 'Disapproved') }})</span></a>
             </th>
         </tr>
     </thead>

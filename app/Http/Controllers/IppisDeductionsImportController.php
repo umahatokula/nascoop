@@ -143,6 +143,11 @@ class IppisDeductionsImportController extends Controller
 
         }
 
+        if(empty($data)) {
+            flash('Data not in correct format')->error();
+            return redirect()->back();
+        }
+
         // save data in db to be processed via cron job
         if (!empty($data)) {
             $import = new IppisDeductionsImport;

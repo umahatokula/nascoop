@@ -52,7 +52,11 @@ class LongTermController extends Controller
 
         $longTermLoansQuery = LongTerm::query();
         $longTermLoansQuery = $longTermLoansQuery->with('payments')->where('ippis', $ippis);
-
+        // $longTermLoansQuery = $longTermLoansQuery->with([
+        //     'payments' => function ($q) {
+        //         $q->orderBy('id', 'DESC');
+        //     }
+        // ])->where('ippis', $ippis);
 
         if ($request->date_from) {    
             $date_from = $request->date_from;
@@ -60,10 +64,13 @@ class LongTermController extends Controller
         }
         
         $longTermLoansQuery = $longTermLoansQuery->whereBetween('loan_date', [$date_from, $date_to]);
+        $longTermLoansPaymentQuery1 = LongTermPayment::whereBetween('loan_date', [$date_from, $date_to])->where('ippis', $ippis)->get();
+        $longTermLoansPaymentQuery2 = LongTermPayment::whereBetween('deposit_date', [$date_from, $date_to])->where('ippis', $ippis)->get();
 
         $data['date_from'] = $date_from;
         $data['date_to'] = $date_to;
         $data['longTermLoans'] = $longTermLoansQuery->get();
+        $data['payments'] = $longTermLoansPaymentQuery1->merge($longTermLoansPaymentQuery2)->sortBy('id');
 
         return view('members.long_term.long_term', $data);
     }
@@ -112,8 +119,8 @@ class LongTermController extends Controller
         
         $takenHousingLoan36 = false;
         $takenHousingLoan72 = false;
-        $housingLoan36 = LongTerm::where(['ippis' => $ippis])->where(['no_of_months' => 36])->first();
-        $housingLoan72 = LongTerm::where(['ippis' => $ippis])->where(['no_of_months' => 72])->first();
+        $housingLoan36 = LongTerm::where(['ippis' => $ippis])->where(['no_of_months' => 36, 'is_approved' => 1])->first();
+        $housingLoan72 = LongTerm::where(['ippis' => $ippis])->where(['no_of_months' => 72, 'is_approved' => 1])->first();
 
         if ($housingLoan36) {
             $housing36LoanPaymentIsAuthorized = LongTermPayment::where(['long_term_id' => $housingLoan36->id, 'is_authorized' => 1])->first();
@@ -401,6 +408,15 @@ class LongTermController extends Controller
             ['key' => 'liquidate',          'value' => 'Liquidate'],
         ];
 
+
+        $longTermLoan_no_of_months = $lastLongTermPayment->longTermLoan->no_of_months; // get loan duration
+        if($longTermLoan_no_of_months) {
+            $loanDuration = LoanDuration::where(['code' => 'ltl', 'number_of_months' => $longTermLoan_no_of_months])->first();
+            $max_deductable_savings_amount = $savings_bal - ($last_long_term_loan_payment->bal / $loanDuration->determinant_factor);
+        } else {
+            $max_deductable_savings_amount = $savings_bal;
+        }
+
         if (request()->ajax()) {
             return [
                 'long_term_loans'       => $longTermLoans, 
@@ -409,6 +425,7 @@ class LongTermController extends Controller
                 'repayment_modes'       => $repaymentModes,
                 'last_long_term_payment'   => $lastLongTermPayment,
                 'savings_bal'           => $savings_bal,
+                'max_deductable_savings_amount' => $max_deductable_savings_amount,
             ];
         }
 

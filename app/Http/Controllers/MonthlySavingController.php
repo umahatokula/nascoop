@@ -213,7 +213,11 @@ class MonthlySavingController extends Controller
         }
 
         $lastLongTermPayment = $member->latest_long_term_payment();
+        $last_long_term_loan_payment = $lastLongTermPayment ? : 0;
+
         $lastMonthlySaving = $member->latest_monthly_savings_payment();
+        $savings_bal = isset($lastMonthlySaving) ? $lastMonthlySaving->bal : 0;
+
         $banks = Bank::all();
         $processingFee = ProcessingFee::first();
 
@@ -229,7 +233,15 @@ class MonthlySavingController extends Controller
         } else {
             $period = null;
         }
-        // dd($period);
+
+        $longTermLoan_no_of_months = !$lastLongTermPayment ? null : ($lastLongTermPayment->longTermLoan ? $lastLongTermPayment->longTermLoan->no_of_months : null); // get loan duration
+        if($longTermLoan_no_of_months) {
+            $loanDuration = LoanDuration::where(['code' => 'ltl', 'number_of_months' => $longTermLoan_no_of_months])->first();
+            $max_deductable_savings_amount = $savings_bal - ($last_long_term_loan_payment->bal / $loanDuration->determinant_factor);
+        } else {
+            $max_deductable_savings_amount = $savings_bal;
+        }
+        
 
         if (request()->ajax()) {
             return [
@@ -240,6 +252,7 @@ class MonthlySavingController extends Controller
                 'banks'                     => $banks, 
                 'processingFee'             => $processingFee,
                 'period'                    => $period,
+                'max_deductable_savings_amount' => $max_deductable_savings_amount,
             ];
         }
 

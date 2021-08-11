@@ -267,6 +267,10 @@ Route::get('manual-ledger-postings/{id}/approve', 'ManualLedgerPostingsControlle
 Route::get('manual-ledger-postings/{id}/disapprove', 'ManualLedgerPostingsController@disapprove')->name('manual-ledger-postings.disapprove');
 Route::resource('manual-ledger-postings', 'ManualLedgerPostingsController');
 
+Route::get('/backup/db', function () {
+    Artisan::call('backup:run --only-db');
+});
+
 
 // ================================TEST ROUTES==============================
 Route::get('tempLogs', 'TempActivityLogController@moveFromTempToActual');

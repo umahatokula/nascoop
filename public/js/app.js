@@ -4133,7 +4133,7 @@ __webpack_require__.r(__webpack_exports__);
       _this2.last_payment = res.data.last_long_term_payment;
       _this2.savings_bal = res.data.savings_bal;
       _this2.last_commodity_loan_payment = res.data.last_commodity_loan_payment;
-      _this2.max_deductable_savings_amount = _this2.savings_bal - _this2.last_payment.bal / 2;
+      _this2.max_deductable_savings_amount = res.data.max_deductable_savings_amount;
       _this2.isLoading = false;
     })["catch"](function (e) {
       console.log(e);
@@ -5731,7 +5731,7 @@ __webpack_require__.r(__webpack_exports__);
       _this2.last_payment = res.data.last_long_term_payment;
       _this2.savings_bal = res.data.savings_bal;
       _this2.last_long_term_loan_payment = res.data.last_long_term_loan_payment;
-      _this2.max_deductable_savings_amount = _this2.savings_bal - _this2.last_payment.bal / 2;
+      _this2.max_deductable_savings_amount = res.data.max_deductable_savings_amount;
       _this2.isLoading = false;
     })["catch"](function (e) {
       console.log(e);
@@ -6322,8 +6322,9 @@ __webpack_require__.r(__webpack_exports__);
         // } else {
         //   this.max_deductable_savings_amount = this.last_monthly_saving.bal - this.last_long_term_payment.bal / 2;
         // }
-        _this2.period = res.data.period;
-        _this2.max_deductable_savings_amount = _this2.last_monthly_saving.bal - _this2.last_long_term_payment.bal / _this2.period.determinant_factor;
+        _this2.period = res.data.period; // this.max_deductable_savings_amount = this.last_monthly_saving.bal - this.last_long_term_payment.bal / this.period.determinant_factor;
+
+        _this2.max_deductable_savings_amount = res.data.max_deductable_savings_amount;
       }
     })["catch"](function (e) {
       console.log(e);
@@ -46320,7 +46321,7 @@ var render = function() {
                               }
                             ],
                             staticClass: "form-control",
-                            attrs: { type: "text" },
+                            attrs: { type: "text", readonly: "" },
                             domProps: { value: comm.number_of_months },
                             on: {
                               input: function($event) {
@@ -46540,7 +46541,7 @@ var render = function() {
                               }
                             ],
                             staticClass: "form-control",
-                            attrs: { type: "text" },
+                            attrs: { type: "text", readonly: "" },
                             domProps: { value: ltl.number_of_months },
                             on: {
                               input: function($event) {
@@ -46796,7 +46797,7 @@ var render = function() {
                               }
                             ],
                             staticClass: "form-control",
-                            attrs: { type: "text" },
+                            attrs: { type: "text", readonly: "" },
                             domProps: { value: stl.number_of_months },
                             on: {
                               input: function($event) {

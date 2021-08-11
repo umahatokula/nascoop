@@ -132,7 +132,7 @@ class Member extends Model
      */
     public function latest_long_term_loan()
     {
-        return $this->long_term_loans->last();
+        return $this-> long_term_loans->where('is_approved', '!=', 2)->last();
     }
 
     /**
@@ -172,7 +172,7 @@ class Member extends Model
      */
     public function latest_short_term_loan()
     {
-        return $this->short_term_loans->last();
+        return $this-> short_term_loans->where('is_approved', '!=', 2)->last();
     }
 
     /**
@@ -212,7 +212,7 @@ class Member extends Model
      */
     public function latest_commodity_loan()
     {
-        return $this->commodities_loans->last();
+        return $this-> commodities_loans->where('is_approved', '!=', 2)->last();
     }
 
     /**

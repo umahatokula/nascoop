@@ -80,7 +80,8 @@
                                     </tr>
                                 </thead>
                                 @foreach($longTermLoans as $longTermLoan)
-                                <tr>
+                                <tr class="{{ $longTermLoan->is_approved == 2 ? 'text-muted' : '' }}"
+                                            style="{{ $longTermLoan->is_approved == 2 ? 'text-decoration: line-through;' : '' }}">
                                     <td class="text-left">
                                         {{ $longTermLoan->loan_date ? $longTermLoan->loan_date->toFormattedDateString() : '' }}
                                     </td>
@@ -120,8 +121,7 @@
                                                 <td class="text-right">Status</td>
                                             </tr>
                                         </thead>
-                                        @foreach($longTermLoans as $longTermLoan)
-                                        @foreach($longTermLoan->payments as $payments)
+                                        @foreach($payments as $payments)
                                         <tr class="{{ $payments->is_authorized == 2 ? 'text-muted' : '' }}"
                                             style="{{ $payments->is_authorized == 2 ? 'text-decoration: line-through;' : '' }}">
                                             <td>{{$payments->ref}}</td>
@@ -147,7 +147,6 @@
                                                 @endif
                                             </td>
                                         </tr>
-                                        @endforeach
                                         @endforeach
                                     </tbody>
                                 </table>

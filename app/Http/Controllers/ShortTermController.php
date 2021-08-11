@@ -343,6 +343,8 @@ class ShortTermController extends Controller
 
         $shortTermLoans = ShortTerm::pluck('ref', 'id');
         $lastLongTermPayment = $member->latest_long_term_payment();
+        $last_long_term_loan_payment = $lastLongTermPayment ? : 0;
+
         $lastShortTermPayment = $member->latest_short_term_payment();
 
         $last_short_term_loan_payment = $lastShortTermPayment ? : 0;
@@ -356,6 +358,15 @@ class ShortTermController extends Controller
             ['key' => 'bank_deposit', 'value' => 'Bank deposit'],
         ];
 
+        
+        $longTermLoan_no_of_months = !$lastLongTermPayment ? null : ($lastLongTermPayment->longTermLoan ? $lastLongTermPayment->longTermLoan->no_of_months : null); // get loan duration
+        if($longTermLoan_no_of_months) {
+            $loanDuration = LoanDuration::where(['code' => 'ltl', 'number_of_months' => $longTermLoan_no_of_months])->first();
+            $max_deductable_savings_amount = $savings_bal - ($last_long_term_loan_payment->bal / $loanDuration->determinant_factor);
+        } else {
+            $max_deductable_savings_amount = $savings_bal;
+        }
+
         if (request()->ajax()) {
             return [
                 'short_term_loans'              => $shortTermLoans,
@@ -364,7 +375,7 @@ class ShortTermController extends Controller
                 'repayment_modes'               => $repaymentModes,
                 'last_long_term_payment'        => $lastLongTermPayment,
                 'savings_bal'                   => $savings_bal,
-                'max_deductable_savings_amount' => $lastLongTermPayment->longTermLoan->no_of_months == 36 ? ($savings_bal - ($lastLongTermPayment->bal/3)) : ($savings_bal - ($lastLongTermPayment->bal/2)),
+                'max_deductable_savings_amount' => $max_deductable_savings_amount,
             ];
         }
 

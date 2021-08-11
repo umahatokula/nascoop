@@ -271,6 +271,7 @@ class CommodityController extends Controller
         $commodityLoans = Commodity::pluck('ref', 'id');
 
         $lastLongTermPayment = $member->latest_long_term_payment();
+        $last_long_term_loan_payment = $lastLongTermPayment ? : 0;
 
         $last_commodity_loan_payment = $member->latest_commodities_payment() ? : 0;
 
@@ -283,6 +284,14 @@ class CommodityController extends Controller
             ['key' => 'bank_deposit', 'value' => 'Bank deposit'],
         ];
 
+        $longTermLoan_no_of_months = $lastLongTermPayment->longTermLoan->no_of_months; // get loan duration
+        if($longTermLoan_no_of_months) {
+            $loanDuration = LoanDuration::where(['code' => 'ltl', 'number_of_months' => $longTermLoan_no_of_months])->first();
+            $max_deductable_savings_amount = $savings_bal - ($last_long_term_loan_payment->bal / $loanDuration->determinant_factor);
+        } else {
+            $max_deductable_savings_amount = $savings_bal;
+        }
+
         if (request()->ajax()) {
             return [
                 'commodity_loans'             => $commodityLoans,
@@ -291,6 +300,7 @@ class CommodityController extends Controller
                 'repayment_modes'             => $repaymentModes,
                 'last_long_term_payment'      => $lastLongTermPayment,
                 'savings_bal'                 => $savings_bal,
+                'max_deductable_savings_amount' => $max_deductable_savings_amount,
             ];
         }
 

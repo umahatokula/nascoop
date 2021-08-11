@@ -31,7 +31,7 @@
                   <small v-if="errors.ltl" class="text-danger">{{ errors.ippis[0] }}</small>
                 </td>
                 <td>
-                  <input v-model="ltl.number_of_months" type="text" class="form-control" />
+                  <input v-model="ltl.number_of_months" type="text" class="form-control" readonly />
                   <small v-if="errors.ltl" class="text-danger">{{ errors.ippis[0] }}</small>
                 </td>
                 <td>

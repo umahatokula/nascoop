@@ -3,6 +3,9 @@
         <tr>
             <th class="text-center" colspan="2"><strong>{{ $loan->member->full_name }}</strong></th>
         </tr>
+        <tr>
+            <th class="text-center" colspan="2"> <span class="{{ $loan->is_approved == 0 ? 'text-muted' : ($loan->is_approved == 1 ? 'text-success' : 'text-danger') }}">({{ $loan->is_approved == 0 ? 'Unprocessed' : ($loan->is_approved == 1 ? 'Approved' : 'Disapproved') }})</span></th>
+        </tr>
     </thead>
     <tbody>
         <tr>

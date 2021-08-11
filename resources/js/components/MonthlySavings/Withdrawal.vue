@@ -251,7 +251,8 @@ export default {
           // }
 
           this.period = res.data.period
-          this.max_deductable_savings_amount = this.last_monthly_saving.bal - this.last_long_term_payment.bal / this.period.determinant_factor;
+          // this.max_deductable_savings_amount = this.last_monthly_saving.bal - this.last_long_term_payment.bal / this.period.determinant_factor;
+          this.max_deductable_savings_amount = res.data.max_deductable_savings_amount
           
         }
       })

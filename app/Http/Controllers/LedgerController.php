@@ -476,15 +476,35 @@ class LedgerController extends Controller
 
                 ActivityLog::where('trxn_number', $trxn_number)->update(['is_authorized' => 1]);
             }
-            
-
         } else {
 
             Ledger::where('trxn_number', $trxn_number)->update(['is_authorized' => 2]);
             MonthlySavingsPayment::where('trxn_number', $trxn_number)->update(['is_authorized' => 2]);
-            LongTermPayment::where('trxn_number', $trxn_number)->update(['is_authorized' => 2]);
+
+            $LongTermPayment = LongTermPayment::where('trxn_number', $trxn_number)->update(['is_authorized' => 2]);
+            if ( $type == 'ltl') {
+                $LongTermPayment = LongTermPayment::where(['trxn_type' => 'ltl', 'trxn_number' => $trxn_number])->first();
+                $longTermLoan = $LongTermPayment->longTermLoan;
+                $longTermLoan->is_approved = 2;
+                $longTermLoan->save();
+            }
+
             ShortTermPayment::where('trxn_number', $trxn_number)->update(['is_authorized' => 2]);
+            if ($type == 'stl') {
+                $ShortTermPayment = ShortTermPayment::where(['trxn_type' => 'stl', 'trxn_number' => $trxn_number])->first();
+                $shortTermLoan = $ShortTermPayment->shortTermLoan;
+                $shortTermLoan->is_approved = 2;
+                $shortTermLoan->save();
+            }
+
             $commodity = CommodityPayment::where('trxn_number', $trxn_number)->update(['is_authorized' => 2]);
+            if ($type == 'coml') {
+                $CommodityPayment = CommodityPayment::where(['trxn_type' => 'coml', 'trxn_number' => $trxn_number])->first();
+                $commodityLoan = $CommodityPayment->commodityLoan;
+                $commodityLoan->is_approved = 2;
+                $commodityLoan->save();
+            }
+
             ActivityLog::where('trxn_number', $trxn_number)->update(['is_authorized' => 2]);
                   
             $member = Member::where('ippis', $ippis)->first();
