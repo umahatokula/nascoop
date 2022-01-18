@@ -387,7 +387,7 @@ class Ledger extends Model
                 $savings_bal = $member->latest_monthly_savings_payment() ? $member->latest_monthly_savings_payment()->bal + $remittedSavingsAmount : $remittedSavingsAmount;
 
                 // make entry in monthly savings payments table
-                MonthlySavingsPayment::insert([
+                $MonthlySavingsPayment = [
                     'monthly_saving_id' => $member->latest_monthly_saving() ? $member->latest_monthly_saving()->id : 0,
                     'trxn_number'       => $trxnNumber,
                     'is_authorized'     => 1,
@@ -402,7 +402,7 @@ class Ledger extends Model
                     'year'              => Carbon::today()->format('Y'),
                     'done_by'           => $done_by,
                     'created_at'        => Carbon::now()->format('Y-m-d h:s:i'),
-                ]);
+                ];
 
                 // Trigger event to save trxn in DB as deposit
                 // if($remittedSavingsAmount != 0) {
@@ -419,7 +419,7 @@ class Ledger extends Model
                 $long_term_bal = $member->latest_long_term_payment() ? $member->latest_long_term_payment()->bal -$remittedLTLAmount : 0 - $remittedLTLAmount;
 
                 // make entry in long term payments table
-                LongTermPayment::insert([
+                $LongTermPayment = [
                     'long_term_id'      => $member->latest_long_term_loan() ? $member->latest_long_term_loan()->id : 0,
                     'trxn_number'        => $trxnNumber,
                     'is_authorized'     => 1,
@@ -434,7 +434,7 @@ class Ledger extends Model
                     'year'              => Carbon::today()->format('Y'),
                     'done_by'           => $done_by,
                     'created_at'        => Carbon::now()->format('Y-m-d h:s:i'),
-                ]);
+                ];
 
                 // Save trxn in Db as repayment via deposit
                 // if($remittedLTLAmount != 0) {
@@ -461,7 +461,7 @@ class Ledger extends Model
 
                     // treat defaults
                     if($longTermDefault && $isDueToPenalizeLTL) {
-                        LongTermLoanDefault::insert([
+                        $LongTermLoanDefault = [
                             'long_term_id'       => $member->latest_long_term_loan() ? $member->latest_long_term_loan()->id : 0,
                             'ippis'              => $ippis,
                             'pay_point'          => $member->pay_point,
@@ -474,9 +474,9 @@ class Ledger extends Model
                             'year'               => Carbon::today()->format('Y'),
                             'done_by'            => $done_by,
                             'created_at'         => Carbon::now()->format('Y-m-d h:s:i'),
-                        ]);
+                        ];
 
-                        LongTermPayment::insert([
+                        $LongTermPaymentOnDefault = [
                             'long_term_id'  => $member->latest_long_term_loan() ? $member->latest_long_term_loan()->id : 0,
                             'trxn_number'   => $trxnNumber,
                             'is_authorized' => 1,
@@ -491,7 +491,7 @@ class Ledger extends Model
                             'year'          => Carbon::today()->format('Y'),
                             'done_by'       => $done_by,
                             'created_at'    => Carbon::now()->format('Y-m-d h:s:i'),
-                        ]);
+                        ];
 
                         $activityLog = new ActivityLog;
                         $activityLog->logThis($trxnNumber, $member->ippis, '(LTL Default)', $longTermDefaultAmt, 1, $done_by);
@@ -504,7 +504,7 @@ class Ledger extends Model
                 $short_term_bal = $member->latest_short_term_payment() ? $member->latest_short_term_payment()->bal - $remittedSTLAmount : 0 -$remittedSTLAmount;
 
                 // make entry in short term payments table
-                ShortTermPayment::insert([
+                $ShortTermPayment = [
                     'short_term_id' => $member->latest_short_term_loan() ? $member->latest_short_term_loan()->id : 0,
                     'trxn_number'   => $trxnNumber,
                     'is_authorized' => 1,
@@ -519,7 +519,7 @@ class Ledger extends Model
                     'year'          => Carbon::today()->format('Y'),
                     'done_by'       => $done_by,
                     'created_at'    => Carbon::now()->format('Y-m-d h:s:i'),
-                ]);
+                ];
 
                 // Save trxn in Db as repayment via deposit
                 // if($remittedSTLAmount != 0) {
@@ -547,7 +547,7 @@ class Ledger extends Model
                     // treat defaults
                     if($shortTermDefault && $isDueToPenalizeSTL) {
 
-                        ShortTermLoanDefault::insert([
+                        $ShortTermLoanDefault = [
                             'short_term_id'      => $member->latest_short_term_loan() ? $member->latest_short_term_loan()->id : 0,
                             'ippis'              => $ippis,
                             'pay_point'          => $member->pay_point,
@@ -560,9 +560,9 @@ class Ledger extends Model
                             'year'               => Carbon::today()->format('Y'),
                             'done_by'            => $done_by,
                             'created_at'         => Carbon::now()->format('Y-m-d h:s:i'),
-                        ]);
+                        ];
 
-                        ShortTermPayment::insert([
+                        $ShortTermPaymentOnDefault = [
                             'short_term_id' => $member->latest_short_term_loan() ? $member->latest_short_term_loan()->id : 0,
                             'trxn_number'   => $trxnNumber,
                             'is_authorized' => 1,
@@ -577,7 +577,7 @@ class Ledger extends Model
                             'year'          => Carbon::today()->format('Y'),
                             'done_by'       => $done_by,
                             'created_at'    => Carbon::now()->format('Y-m-d h:s:i'),
-                        ]);
+                        ];
 
                         $activityLog = new ActivityLog;
                         $activityLog->logThis($trxnNumber, $member->ippis, '(STL Default)', $shortTermDefaultAmt, 1, $done_by);
@@ -590,7 +590,7 @@ class Ledger extends Model
                 $commodity_bal = $member->latest_commodities_payment() ? $member->latest_commodities_payment()->bal - $remittedCOMMAmount : 0 - $remittedCOMMAmount;
 
                 // make entry in short term payments table
-                CommodityPayment::insert([
+                $CommodityPayment = [
                     'commodity_id'      => $member->latest_commodity_loan() ? $member->latest_commodity_loan()->id : 0,
                     'trxn_number'        => $trxnNumber,
                     'is_authorized'     => 1,
@@ -605,7 +605,7 @@ class Ledger extends Model
                     'year'              => Carbon::today()->format('Y'),
                     'done_by'           => $done_by,
                     'created_at'        => Carbon::now()->format('Y-m-d h:s:i'),
-                ]);
+                ];
 
                 // Save trxn in Db as repayment via deposit
                 // if($remittedCOMMAmount != 0) {
@@ -632,7 +632,7 @@ class Ledger extends Model
                     // treat defaults
                     if($commodityDefault && $isDueToPenalizeCOMM) {
 
-                        CommodityLoanDefault::insert([
+                        $CommodityLoanDefault = [
                             'commodity_id'         => $member->latest_commodity_loan() ? $member->latest_commodity_loan()->id : 0,
                             'ippis'                 => $ippis,
                             'pay_point'             => $member->pay_point,
@@ -645,9 +645,9 @@ class Ledger extends Model
                             'year'                  => Carbon::today()->format('Y'),
                             'done_by'               => $done_by,
                             'created_at'            => Carbon::now()->format('Y-m-d h:s:i'),
-                        ]);
+                        ];
 
-                        CommodityPayment::insert([
+                        $CommodityPaymentOnDefault = [
                             'commodity_id'      => $member->latest_commodity_loan() ? $member->latest_commodity_loan()->id : 0,
                             'trxn_number'        => $trxnNumber,
                             'is_authorized'     => 1,
@@ -662,7 +662,7 @@ class Ledger extends Model
                             'year'              => Carbon::today()->format('Y'),
                             'done_by'           => $done_by,
                             'created_at'        => Carbon::now()->format('Y-m-d h:s:i'),
-                        ]);
+                        ];
                     
                         $activityLog = new ActivityLog;
                         $activityLog->logThis($trxnNumber, $member->ippis, '(COML Default)', $remittedCOMMAmount, 1, $done_by);
@@ -810,7 +810,7 @@ class Ledger extends Model
                     ]);
                 }
 
-                $result = [
+                $summary = [
                     'ippis'            => $ippis,
                     'name'             => $member->full_name,
                     'expected_savings' => $monthlyDeductions['monthly_savings_amount'],
@@ -822,8 +822,22 @@ class Ledger extends Model
                     'expected_coml'    => $expectedCOMMAmount,
                     'remitted_coml'    => $remittedCOMMAmount,
                     'message'          => 'Successful',
-                    'is_successful'   => 1,
-                    'error'          => false,
+                    'is_successful'    => 1,
+                    'error'            => false,
+                ];
+
+                $result = [
+                    'MonthlySavingsPayment'     => $MonthlySavingsPayment,
+                    'LongTermPayment'           => $LongTermPayment,
+                    'LongTermLoanDefault'       => $LongTermLoanDefault ?? null,
+                    'LongTermPaymentOnDefault'  => $LongTermPaymentOnDefault ?? null,
+                    'ShortTermPayment'          => $ShortTermPayment,
+                    'ShortTermLoanDefault'      => $ShortTermLoanDefault ?? null,
+                    'ShortTermPaymentOnDefault' => $ShortTermPaymentOnDefault ?? null,
+                    'CommodityPayment'          => $CommodityPayment,
+                    'CommodityLoanDefault'      => $CommodityLoanDefault ?? null,
+                    'CommodityPaymentOnDefault' => $CommodityPaymentOnDefault ?? null,
+                    'summary'                   => $summary,
                 ];
                 // \Log::info($result);
 

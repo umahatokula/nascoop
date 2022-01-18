@@ -73,7 +73,7 @@ class LedgerSnapShotController extends Controller
         
         $snapShot = LedgerSnapShot::where('is_done', 0)->first();
 
-        if($snapShot->isEmpty()) {
+        if(!$snapShot) {
             return;
         }
 

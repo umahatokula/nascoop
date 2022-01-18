@@ -51,12 +51,9 @@ class LongTermController extends Controller
         }
 
         $longTermLoansQuery = LongTerm::query();
-        $longTermLoansQuery = $longTermLoansQuery->with('payments')->where('ippis', $ippis);
-        // $longTermLoansQuery = $longTermLoansQuery->with([
-        //     'payments' => function ($q) {
-        //         $q->orderBy('id', 'DESC');
-        //     }
-        // ])->where('ippis', $ippis);
+        $longTermLoansQuery = $longTermLoansQuery->with(['payments' => function ($query) {
+            $query->orderBy('created_at', 'desc');
+        }])->where('ippis', $ippis);
 
         if ($request->date_from) {    
             $date_from = $request->date_from;

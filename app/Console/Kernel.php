@@ -26,11 +26,11 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('backup:run --only-db --only-to-disk=dropbox')->daily();
         // $schedule->command('backup:run')->monthly();
-        $schedule->call('App\Http\Controllers\AutomatedJobsController@revertMonthlySavings')->dailyAt('01:00');
+        $schedule->call('App\Http\Controllers\AutomatedJobsController@revertMonthlySavings')->everyMinute();
         // $schedule->call('App\Http\Controllers\InitialImportController@doInitialImport')->everyMinute();
         $schedule->call('App\Http\Controllers\IppisDeductionsExportController@generateIPPIDDeductionFile')->everyMinute();
         $schedule->call('App\Http\Controllers\IppisDeductionsImportController@reconcileIppisImport')->everyMinute();
-        $schedule->call('App\Http\Controllers\LedgerSnapShotController@generateLedgerSnapShot')->dailyAt('01:00');
+        $schedule->call('App\Http\Controllers\LedgerSnapShotController@generateLedgerSnapShot')->everyMinute();
         // $schedule->call('App\Http\Controllers\TempActivityLogController@moveFromTempToActual')->everyMinute();
         $schedule->command('queue:work --tries=3')->everyMinute()->withoutOverlapping();
     }

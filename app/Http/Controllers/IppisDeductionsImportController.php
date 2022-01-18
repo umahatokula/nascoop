@@ -2,29 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\Serialisers\CustomSerialiser;
-
-use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\ReconciledDeductionsExport;
-use Importer;
 use Exporter;
 
-
-use Illuminate\Http\Request;
-
-use App\Member;
-use App\Ledger;
-use Carbon\Carbon;
-use App\IppisDeductionsImport;
-use App\TempActivityLog;
+use Importer;
 use App\Center;
-use App\IppisDeduction;
+use App\Ledger;
+use App\Member;
 
-use App\Jobs\ProcessIPPISImport;
-use App\IppisReconciledData;
+
 use App\IppisTrxn;
-use App\IppisTrxnPayment;
+
+use Carbon\Carbon;
+use App\IppisDeduction;
 use App\Ledger_Internal;
+use App\LongTermPayment;
+use App\TempActivityLog;
+use App\CommodityPayment;
+use App\IppisTrxnPayment;
+
+use App\ShortTermPayment;
+use App\IppisReconciledData;
+use App\LongTermLoanDefault;
+use Illuminate\Http\Request;
+use App\CommodityLoanDefault;
+use App\ShortTermLoanDefault;
+use App\IppisDeductionsImport;
+use App\MonthlySavingsPayment;
+use App\Jobs\ProcessIPPISImport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Serialisers\CustomSerialiser;
+use App\Exports\ReconciledDeductionsExport;
 
 
 class IppisDeductionsImportController extends Controller
@@ -216,7 +223,7 @@ class IppisDeductionsImportController extends Controller
 
         $tempLog = IppisDeductionsImport::where('is_done', 0)->first();
         // $tempLog = IppisDeductionsImport::latest()->first();
-        // dd(is_null($tempLog));
+        // dd($tempLog);
 
         if(is_null($tempLog)) {
             return;
@@ -272,6 +279,17 @@ class IppisDeductionsImportController extends Controller
                 $remitted_stl               = 0;
                 $remitted_coml              = 0;
 
+                $MonthlySavingsPayment = [];
+                $LongTermPayment = [];
+                $LongTermLoanDefault = [];
+                $LongTermPaymentOnDefault = [];
+                $ShortTermPayment = [];
+                $ShortTermLoanDefault = [];
+                $ShortTermPaymentOnDefault = [];
+                $CommodityPayment = [];
+                $CommodityLoanDefault = [];
+                $CommodityPaymentOnDefault = [];
+
                 foreach ($rows as $row) {
 
                     $ippis = $row[1];
@@ -284,37 +302,94 @@ class IppisDeductionsImportController extends Controller
                         // perform deductions
                         $result = Ledger::executeDeductions($ippis, $amountDeductedByIppis, $monthlyExpectedDeductions, $ref, $tempLog->deduction_for, $done_by);
 
-                        if(!$result['error']) {
+                        if(!isset($result['error'])) {
                             // dd($result);
+                            $MonthlySavingsPayment[] = $result['MonthlySavingsPayment'];
+
+                            $LongTermPayment[] = $result['LongTermPayment'];
+                            if($result['LongTermLoanDefault']) {
+                                $LongTermLoanDefault[] = $result['LongTermLoanDefault'];
+                            }
+                            if($result['LongTermPaymentOnDefault']) {
+                                $LongTermPaymentOnDefault[] = $result['LongTermPaymentOnDefault'];
+                            }
+
+                            $ShortTermPayment[] = $result['ShortTermPayment'];
+                            if($result['ShortTermLoanDefault']) {
+                                $ShortTermLoanDefault[] = $result['ShortTermLoanDefault'];
+                            }
+                            if($result['ShortTermPaymentOnDefault']) {
+                                $ShortTermPaymentOnDefault[] = $result['ShortTermPaymentOnDefault'];
+                            }
+
+                            $CommodityPayment[] = $result['CommodityPayment'];
+                            if($result['CommodityLoanDefault']) {
+                                $CommodityLoanDefault[] = $result['CommodityLoanDefault'];
+                            }
+                            if($result['CommodityPaymentOnDefault']) {
+                                $CommodityPaymentOnDefault[] = $result['CommodityPaymentOnDefault'];
+                            }
                             
-                            $deductions[] = $result;
+                            $deductions[] = $result['summary'];
                             // dd($deductions);
                             
                             $reconciled                             = new IppisReconciledData;
                             $reconciled->ippis_deductions_import_id = $tempLog->id;
                             $reconciled->month                      = $deduction_for->format('m');
                             $reconciled->year                       = $deduction_for->format('Y');
-                            $reconciled->ippis                      = $result['ippis'];
-                            $reconciled->name                       = $result['name'];
-                            $reconciled->expected_savings           = $result['expected_savings'];
-                            $reconciled->remitted_savings           = $result['remitted_savings'];
-                            $reconciled->expected_ltl               = $result['expected_ltl'];
-                            $reconciled->remitted_ltl               = $result['remitted_ltl'];
-                            $reconciled->expected_stl               = $result['expected_stl'];
-                            $reconciled->remitted_stl               = $result['remitted_stl'];
-                            $reconciled->expected_coml              = $result['expected_coml'];
-                            $reconciled->remitted_coml              = $result['remitted_coml'];
-                            $reconciled->message                    = $result['message'];
-                            $reconciled->is_successful              = $result['is_successful'];
+                            $reconciled->ippis                      = $result['summary']['ippis'];
+                            $reconciled->name                       = $result['summary']['name'];
+                            $reconciled->expected_savings           = $result['summary']['expected_savings'];
+                            $reconciled->remitted_savings           = $result['summary']['remitted_savings'];
+                            $reconciled->expected_ltl               = $result['summary']['expected_ltl'];
+                            $reconciled->remitted_ltl               = $result['summary']['remitted_ltl'];
+                            $reconciled->expected_stl               = $result['summary']['expected_stl'];
+                            $reconciled->remitted_stl               = $result['summary']['remitted_stl'];
+                            $reconciled->expected_coml              = $result['summary']['expected_coml'];
+                            $reconciled->remitted_coml              = $result['summary']['remitted_coml'];
+                            $reconciled->message                    = $result['summary']['message'];
+                            $reconciled->is_successful              = $result['summary']['is_successful'];
                             $reconciled->save();
 
                             // get total remitted savings, ltl. stl and coml for this upload. To be recorded in COA
-                            $remitted_savings += floatval($result['remitted_savings']);
-                            $remitted_ltl     += floatval($result['remitted_ltl']);
-                            $remitted_stl     += floatval($result['remitted_stl']);
-                            $remitted_coml    += floatval($result['remitted_coml']);
-                        }                         
+                            $remitted_savings += floatval($result['summary']['remitted_savings']);
+                            $remitted_ltl     += floatval($result['summary']['remitted_ltl']);
+                            $remitted_stl     += floatval($result['summary']['remitted_stl']);
+                            $remitted_coml    += floatval($result['summary']['remitted_coml']);
+                        }                       
                     }
+                }
+                // dd($MonthlySavingsPayment, $LongTermPayment, $LongTermLoanDefault);
+
+                if(!empty($MonthlySavingsPayment)) {
+                    MonthlySavingsPayment::insert($MonthlySavingsPayment);
+                }
+                if(!empty($LongTermPayment)) {
+                    LongTermPayment::insert($LongTermPayment);
+                }
+                if(!empty($LongTermLoanDefault)) {
+                    LongTermLoanDefault::insert($LongTermLoanDefault);
+                }
+                if(!empty($LongTermPaymentOnDefault)) {
+                    LongTermPayment::insert($LongTermPaymentOnDefault);
+                }
+                if(!empty($ShortTermPayment)) {
+                    ShortTermPayment::insert($ShortTermPayment);
+                }
+                if(!empty($ShortTermLoanDefault)) {
+                    ShortTermLoanDefault::insert($ShortTermLoanDefault);
+                }
+                if(!empty($ShortTermPaymentOnDefault)) {
+                    ShortTermPayment::insert($ShortTermPaymentOnDefault);
+                }
+                if(!empty($CommodityPayment)) {
+                    CommodityPayment::insert($CommodityPayment);
+                }
+                if(!empty($CommodityLoanDefault)) {
+                    CommodityLoanDefault::insert($CommodityLoanDefault);
+                }
+                if(!empty($CommodityPaymentOnDefault)) {
+                    CommodityPayment::insert($CommodityPaymentOnDefault);
                 }
 
                 // Trigger event to save trxn in DB as deposit
