@@ -74,7 +74,7 @@ class LedgerInternalController extends Controller
 
         $dateFrom = Carbon::today()->startOfYear();
         $dateTo = Carbon::today()->endOfYear();
-        
+
 		if (request('dateFrom')) {
             $dateFrom = Carbon::parse(request('dateFrom'));
             $dateTo = Carbon::parse(request('dateTo'));
@@ -113,20 +113,20 @@ class LedgerInternalController extends Controller
      * Display Profit and Loss
      */
     public function profitAndLoss() {
-        
+
 
         if(request()->ajax()) {
             return response()->json([
                 'message' => 'success',
                 'data' => [
-                    
+
                 ],
             ]);
         }
-        
+
         $dateFrom = Carbon::today()->startOfYear();
         $dateTo = Carbon::today()->endOfYear();
-        
+
 		if (request('dateFrom')) {
             $dateFrom = Carbon::parse(request('dateFrom'));
             $dateTo = Carbon::parse(request('dateTo'));
@@ -148,7 +148,7 @@ class LedgerInternalController extends Controller
 
         $dateFrom = Carbon::today()->startOfYear();
         $dateTo = Carbon::today()->endOfYear();
-        
+
 		if (request('dateFrom')) {
             $dateFrom = Carbon::parse(request('dateFrom'));
             $dateTo = Carbon::parse(request('dateTo'));
@@ -168,7 +168,7 @@ class LedgerInternalController extends Controller
             //     $parent = $item->ledger_dr->getParent();
 
             //     if ($parent->use_centers_as_detail_accounts) {
-            //         return 
+            //         return
             //     }
             //     return $item * 2;
             // });
@@ -253,7 +253,7 @@ class LedgerInternalController extends Controller
 
     /**
      * Save data to create new leder account in DB
-     * 
+     *
      * @return Object
      */
     public function postNewAccount(Request $request) {
@@ -280,7 +280,7 @@ class LedgerInternalController extends Controller
 
         // ensure header account numbers end with a zero
         if($request->usage == 'header' && substr($request->ledger_no, -1, 1) != 0) {
-            throw ValidationException::withMessages(['ledger_no' => 'Header accounts must end with a zero']); 
+            throw ValidationException::withMessages(['ledger_no' => 'Header accounts must end with a zero']);
         }
 
         $parent    = Ledger_Internal::find($request->parent_id);
@@ -354,11 +354,11 @@ class LedgerInternalController extends Controller
 
     /**
      * Get all the children of an account type
-     * 
+     *
      * @return Array
      */
     public function accountTypeChildren($accountType) {
-        
+
         $children = Ledger_Internal::where(['account_type' => $accountType, 'usage' => 'header'])->get();
 
         if (request()->json()) {
@@ -377,7 +377,7 @@ class LedgerInternalController extends Controller
 
     /**
      * Save data to transaction_types_ex table
-     * 
+     *
      * @return Object
      */
     public function postLinkAccounts(Request $request) {
@@ -397,13 +397,13 @@ class LedgerInternalController extends Controller
         $types = $request->all();
 
         foreach ($types as $type) {
-                        
+
             $trxnTypes = DB::table('transaction_type__ext')
               ->where('xact_type_code_ext', $type['xact_type_code_ext'])
               ->update([
                   'associated_trxns' => json_encode($type['associated_trxns'])
                   ]);
-              
+
         }
 
         return response()->json([
@@ -424,14 +424,12 @@ class LedgerInternalController extends Controller
         $year = date('Y');
 
         $accountTypeHeaders = Ledger_Internal::where('account_type', $account_type)->where('show_in_report_as_header', 1)->get();
-        // dd($accountTypeHeaders);
 
         $result = [];
         $accountTypeTotal = 0;
         foreach ($accountTypeHeaders as $header) {
             if($header->show_total_amount_in_report) {
                 $balance = $header->getBalanceOfAllDescendants($dateFrom, $dateTo);
-                // dd($balance);
 
                 $result[] = [$header, $balance];
                 $accountTypeTotal += $balance;
@@ -440,7 +438,7 @@ class LedgerInternalController extends Controller
         }
 
         $accountTypeData = $result;
-        
+
         if(request()->ajax()) {
             return response()->json([
                 'message' => 'success',
@@ -467,15 +465,15 @@ class LedgerInternalController extends Controller
         if(request()->ajax()) {
 
             // dd($request->all());
-    
+
             $rules = [
                 'ledger_no'    => 'required',
             ];
-    
+
             $messages = [
                 'ledger_no.required'    => 'Please enter the account code',
             ];
-    
+
             $this->validate($request, $rules, $messages);
 
             $result = [];
@@ -503,7 +501,7 @@ class LedgerInternalController extends Controller
                     }
                     // dd($total);
                 }
-            }            
+            }
 
             return response()->json([
                 'message' => 'success',
@@ -593,7 +591,7 @@ class LedgerInternalController extends Controller
 
         $dateFrom = Carbon::today()->startOfYear();
         $dateTo = Carbon::today()->endOfYear();
-        
+
 		if (request('dateFrom')) {
             $dateFrom = Carbon::parse(request('dateFrom'));
             $dateTo = Carbon::parse(request('dateTo'));
@@ -612,7 +610,7 @@ class LedgerInternalController extends Controller
                 $cr = LedgerInternalTransaction::where('ledger_no', $account->ledger_no)->whereBetween('created_at', [$dateFrom, $dateTo])->sum('amount');
                 $dr = LedgerInternalTransaction::where('ledger_no_dr', $account->ledger_no)->whereBetween('created_at', [$dateFrom, $dateTo])->sum('amount');
             }
-            
+
 
             $accountType = $account->account_type;
             $bal = 0;
@@ -637,9 +635,9 @@ class LedgerInternalController extends Controller
 
             $results[] = [$account, $bal, $dr, $cr];
         }
-        
+
         $trialBalances = $results;
-    
+
         if(request()->ajax()) {
             return response()->json([
                 'message' => 'success',
@@ -712,10 +710,10 @@ class LedgerInternalController extends Controller
         $data['account'] = $account;
         $data['dateFrom'] = $dateFrom;
         $data['dateTo'] = $dateTo;
-        $data['orderBys'] = $orderBys; 
-        $data['orderBy'] = $orderBy; 
-        $data['orderDirections'] = $orderDirections; 
-        $data['orderDirection'] = $orderDirection; 
+        $data['orderBys'] = $orderBys;
+        $data['orderBy'] = $orderBy;
+        $data['orderDirections'] = $orderDirections;
+        $data['orderDirection'] = $orderDirection;
 
         return view('accounting.accountLedger', $data);
     }
@@ -747,7 +745,7 @@ class LedgerInternalController extends Controller
         $data['account'] = $account;
         $data['dateFrom'] = $dateFrom;
         $data['dateTo'] = $dateTo;
-        
+
         $pdf = \PDF::loadView('pdf.accountLedger', $data)->setPaper('a4', 'landscape');
         return $pdf->download('GeneralLedger.pdf');
     }
@@ -758,7 +756,7 @@ class LedgerInternalController extends Controller
      */
     public function trialBalancePdf($dateFrom, $dateTo) {
         // dd(request('dateFrom'));
-        
+
 		if ($dateFrom) {
             $dateFrom = Carbon::parse(request('dateFrom'));
             $dateTo = Carbon::parse(request('dateTo'));
@@ -777,7 +775,7 @@ class LedgerInternalController extends Controller
                 $cr = LedgerInternalTransaction::where('ledger_no', $account->ledger_no)->whereBetween('created_at', [$dateFrom, $dateTo])->sum('amount');
                 $dr = LedgerInternalTransaction::where('ledger_no_dr', $account->ledger_no)->whereBetween('created_at', [$dateFrom, $dateTo])->sum('amount');
             }
-            
+
 
             $accountType = $account->account_type;
             $bal = 0;
@@ -802,22 +800,22 @@ class LedgerInternalController extends Controller
 
             $results[] = [$account, $bal];
         }
-        
+
         $trialBalances = $results;
 
         $data['trialBalances'] = $results;
         $data['dateFrom'] = $dateFrom;
         $data['dateTo'] = $dateTo;
-        
+
         $pdf = \PDF::loadView('pdf.trialBalance', $data)->setPaper('a4', 'landscape');
         return $pdf->download('TrialBalance.pdf');
     }
 
-    public function singleLegEntry() {        
+    public function singleLegEntry() {
         $data['accounts'] = Ledger_Internal::select('*', DB::raw('CONCAT(ledger_no, " - ", account_name) AS name'))
             ->where('usage', 'detail')
             ->pluck('name', 'ledger_no');
-        
+
             $data['types'] = [
                 'debit' => 'Debit',
                 'credit' => 'Credit',
